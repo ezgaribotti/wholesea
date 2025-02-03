@@ -4,7 +4,7 @@ namespace App\Interfaces;
 
 interface OperatorRepositoryInterface extends RepositoryInterface
 {
-    public function internalCodeExists(string $internalCode): bool;
+    public function findByInternalCode(string $internalCode): ?object;
 
-    public function emailExists(string $email): bool;
+    public function findByEmail(string $email): ?object;
 }

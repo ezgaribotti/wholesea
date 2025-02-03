@@ -12,13 +12,13 @@ class OperatorRepository extends Repository implements OperatorRepositoryInterfa
         parent::__construct($operator);
     }
 
-    public function internalCodeExists(string $internalCode): bool
+    public function findByInternalCode(string $internalCode): ?object
     {
-        return $this->entity->whereInternalCode($internalCode)->exists();
+        return $this->entity->whereInternalCode($internalCode)->first();
     }
 
-    public function emailExists(string $email): bool
+    public function findByEmail(string $email): ?object
     {
-        return $this->entity->whereEmail($email)->exists();
+        return $this->entity->whereEmail($email)->first();
     }
 }

@@ -46,12 +46,12 @@ class OperatorController extends Controller
     {
         $operator = $this->operatorRepository->findOrFail($id);
         if ($operator->internal_code != $request->internal_code) {
-            if ($this->operatorRepository->internalCodeExists($request->internal_code)) {
+            if ($this->operatorRepository->findByInternalCode($request->internal_code)) {
                 abort(422, 'Internal code already exists.');
             }
         }
         if ($operator->email != $request->email) {
-            if ($this->operatorRepository->emailExists($request->email)) {
+            if ($this->operatorRepository->findByEmail($request->email)) {
                 abort(422, 'Email already exists.');
             }
         }
