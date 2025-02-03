@@ -8,7 +8,8 @@ use App\Interfaces\RepositoryInterface;
 abstract class Repository implements RepositoryInterface
 {
     public function __construct(
-        protected Entity $entity)
+        protected Entity $entity
+    )
     {
     }
 
@@ -20,6 +21,11 @@ abstract class Repository implements RepositoryInterface
     public function find($id): ?object
     {
         return $this->entity->find($id);
+    }
+
+    public function findOrFail($id): object
+    {
+        return $this->entity->findOrFail($id);
     }
 
     public function create(array $attributes): object

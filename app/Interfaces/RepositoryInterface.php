@@ -8,6 +8,8 @@ interface RepositoryInterface
 
     public function find($id): ?object;
 
+    public function findOrFail($id): object;
+
     public function create(array $attributes): object;
 
     public function update(array $attributes, $id): void;
