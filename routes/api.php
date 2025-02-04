@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\IdentityDocumentTypeController;
 use App\Http\Controllers\OperatorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,4 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'logout')->name('logout');
     });
     Route::apiResource('operators', OperatorController::class);
+    Route::apiResource('countries', CountryController::class)->only(['index']);
+    Route::apiResource('identity-document-types', IdentityDocumentTypeController::class)->only(['index']);
 });
