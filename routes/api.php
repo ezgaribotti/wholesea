@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\IdentityDocumentTypeController;
 use App\Http\Controllers\OperatorController;
 use Illuminate\Http\Request;
@@ -21,4 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('operators', OperatorController::class);
     Route::apiResource('countries', CountryController::class)->only(['index']);
     Route::apiResource('identity-document-types', IdentityDocumentTypeController::class)->only(['index']);
+    Route::apiResource('customers', CustomerController::class);
 });

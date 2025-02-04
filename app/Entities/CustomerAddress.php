@@ -19,6 +19,11 @@ class CustomerAddress extends Entity
         'description',
     ];
 
+    public function country(): object
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     protected static function newFactory(): object
     {
         return CustomerAddressFactory::new();
