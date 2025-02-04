@@ -6,6 +6,8 @@ interface RepositoryInterface
 {
     public function all(): object;
 
+    public function paginate(object $request): object;
+
     public function find($id): ?object;
 
     public function findOrFail($id): object;

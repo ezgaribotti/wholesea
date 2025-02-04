@@ -12,8 +12,9 @@ class OperatorSummaryResource extends JsonResource
         return [
             'id' => $this->id,
             'full_name' => $this->full_name,
-            'internal_code' => $this->internal_code,
             'status' => $this->status,
+            'internal_code' => $this->internal_code,
+            'email' => $this->email,
         ];
     }
 }
