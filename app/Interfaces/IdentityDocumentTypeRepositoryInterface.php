@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface IdentityDocumentTypeRepositoryInterface extends RepositoryInterface
 {
-    public function getByCountryId($id): object;
+    public function getByCountryId(int $countryId): object;
 }

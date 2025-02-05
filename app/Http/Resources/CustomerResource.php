@@ -13,11 +13,10 @@ class CustomerResource extends JsonResource
             'id' => $this->id,
             'full_name' => $this->full_name,
             'status' => $this->status,
-            'identity_document_type' => IdentityDocumentTypeResource::make($this->identityDocumentType),
+            'identity_document_type' => new IdentityDocumentTypeResource($this->identityDocumentType),
             'identity_document' => $this->identity_document,
             'email' => $this->email,
             'phone' => $this->phone,
-            'addresses' => CustomerAddressResource::collection($this->addresses),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

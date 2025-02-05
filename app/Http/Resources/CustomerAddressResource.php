@@ -11,7 +11,7 @@ class CustomerAddressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'country' => CountryResource::make($this->country),
+            'country' => new CountryResource($this->country),
             'full_street' => $this->full_street,
             'postal_code' => $this->postal_code,
             'city' => $this->city,

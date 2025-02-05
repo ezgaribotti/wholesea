@@ -14,7 +14,7 @@ class UpdateCustomerAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'country_id' => 'required|exists:countries,id',
+            'country_id' => 'required|integer|exists:countries,id',
             'full_street' => 'required',
             'postal_code' => 'required',
             'city' => 'required',

@@ -15,7 +15,7 @@ class StoreCustomerRequest extends FormRequest
     {
         return [
             'full_name' => 'required',
-            'identity_document_type_id' => 'required|exists:identity_document_types,id',
+            'identity_document_type_id' => 'required|integer|exists:identity_document_types,id',
             'identity_document' => 'required|unique:customers,identity_document',
             'email' => 'required|email|unique:customers,email',
             'phone' => 'nullable',

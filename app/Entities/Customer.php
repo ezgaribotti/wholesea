@@ -23,11 +23,6 @@ class Customer extends Entity
         return $this->belongsTo(IdentityDocumentType::class);
     }
 
-    public function addresses(): object
-    {
-        return $this->hasMany(CustomerAddress::class);
-    }
-
     protected static function newFactory(): object
     {
         return CustomerFactory::new();

@@ -29,7 +29,7 @@ class AuthController extends Controller
                     abort(401, 'Your account has been blocked.');
                 }
                 $accessToken = $operator->createToken($request->ip())->plainTextToken;
-                return response()->success(AccessTokenResource::make($accessToken));
+                return response()->success(new AccessTokenResource($accessToken));
             }
         }
         abort(401, 'The internal code or password is wrong.');
@@ -38,7 +38,7 @@ class AuthController extends Controller
     public function currentOperator(Request $request): object
     {
         $operator = $request->user();
-        return response()->success(OperatorResource::make($operator));
+        return response()->success(new OperatorResource($operator));
     }
 
     public function logout(Request $request): object

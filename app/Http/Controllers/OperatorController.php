@@ -6,7 +6,6 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreOperatorRequest;
 use App\Http\Requests\UpdateOperatorRequest;
 use App\Http\Resources\OperatorResource;
-use App\Http\Resources\OperatorSummaryResource;
 use App\Interfaces\OperatorRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,7 +20,7 @@ class OperatorController extends Controller
     public function index(PaginateRequest $request): object
     {
         $operators = $this->operatorRepository->paginate($request);
-        return response()->withPaginate(OperatorSummaryResource::collection($operators));
+        return response()->withPaginate(OperatorResource::collection($operators));
     }
 
     public function store(StoreOperatorRequest $request): object
@@ -39,8 +38,7 @@ class OperatorController extends Controller
         if (!$operator) {
             abort(404, 'Operator not found.');
         }
-
-        return response()->success(OperatorResource::make($operator));
+        return response()->success(new OperatorResource($operator));
     }
 
     public function update(UpdateOperatorRequest $request, string $id): object

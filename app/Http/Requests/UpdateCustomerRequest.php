@@ -16,7 +16,7 @@ class UpdateCustomerRequest extends FormRequest
         return [
             'full_name' => 'required',
             'status' => 'required|in:active,blocked',
-            'identity_document_type_id' => 'required|exists:identity_document_types,id',
+            'identity_document_type_id' => 'required|integer|exists:identity_document_types,id',
             'identity_document' => 'required',
             'email' => 'required|email',
             'phone' => 'nullable',

@@ -12,8 +12,8 @@ class IdentityDocumentTypeRepository extends Repository implements IdentityDocum
         parent::__construct($type);
     }
 
-    public function getByCountryId($id): object
+    public function getByCountryId(int $countryId): object
     {
-        return $this->entity->whereCountryId($id)->get();
+        return $this->entity->whereCountryId($countryId)->get();
     }
 }

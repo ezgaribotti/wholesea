@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JustCustomerIdRequest;
 use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Http\Requests\UpdateCustomerAddressRequest;
 use App\Http\Resources\CustomerAddressResource;
@@ -13,6 +14,12 @@ class CustomerAddressController extends Controller
         protected CustomerAddressRepositoryInterface $addressRepository,
     )
     {
+    }
+
+    public function index(JustCustomerIdRequest $request): object
+    {
+        $addresses = $this->addressRepository->getByCustomerId($request->customer_id);
+        return response()->success(CustomerAddressResource::collection($addresses));
     }
 
     public function store(StoreCustomerAddressRequest $request)
@@ -27,7 +34,7 @@ class CustomerAddressController extends Controller
         if (!$address) {
             abort(404, 'Address not found.');
         }
-        return response()->success(CustomerAddressResource::make($address));
+        return response()->success(new CustomerAddressResource($address));
     }
 
     public function update(UpdateCustomerAddressRequest $request, string $id)

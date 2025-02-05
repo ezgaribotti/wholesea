@@ -24,5 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('countries', CountryController::class)->only(['index']);
     Route::apiResource('identity-document-types', IdentityDocumentTypeController::class)->only(['index']);
     Route::apiResource('customers', CustomerController::class);
-    Route::apiResource('customer-addresses', CustomerAddressController::class)->except(['index']);
+    Route::apiResource('customer-addresses', CustomerAddressController::class);
 });
