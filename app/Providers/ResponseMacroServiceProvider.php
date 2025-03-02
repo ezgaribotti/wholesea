@@ -15,24 +15,24 @@ class ResponseMacroServiceProvider extends ServiceProvider
     {
         Response::macro('justMessage', function (string $message) {
             return Response::json([
-                'message' => $message,
+                'message' => __($message),
                 'data' => null,
             ]);
         });
 
-        Response::macro('success', function (object $data, string $message = null) {
+        Response::macro('success', function (object $data, ?string $message = null) {
             return Response::json([
-                'message' => $message,
+                'message' => __($message),
                 'data' => $data,
             ]);
         });
 
-        Response::macro('error', function (int $statusCode = 500, string $message = null) {
+        Response::macro('error', function (int $statusCode = 500, ?string $message = null) {
             if (!in_array($statusCode, [400, 401, 403, 404, 422, 500])) {
                 $statusCode = 500;
             }
             return Response::json([
-                'message' => $message,
+                'message' => __($message),
                 'data' => null,
             ], $statusCode);
         });
