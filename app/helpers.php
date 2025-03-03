@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Fluent;
 
 if (! function_exists('build_path')) {
@@ -13,5 +14,12 @@ if (! function_exists('to_object')) {
     function to_object(array $attributes = []): object
     {
         return new Fluent($attributes);
+    }
+}
+
+if (! function_exists('api_routes')) {
+    function api_routes($callback): object
+    {
+        return Route::middleware('api')->prefix('api')->name('api.')->group($callback);
     }
 }
