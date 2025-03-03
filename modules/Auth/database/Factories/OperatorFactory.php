@@ -3,6 +3,7 @@
 namespace Modules\Auth\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Modules\Auth\src\Entities\Operator;
 
 class OperatorFactory extends Factory
@@ -11,6 +12,11 @@ class OperatorFactory extends Factory
 
     public function definition(): array
     {
-        return [];
+        return [
+            'full_name' => fake()->name,
+            'internal_code' => fake()->unique()->unixTime,
+            'email' => fake()->unique()->email,
+            'password' => Hash::make('password'),
+        ];
     }
 }

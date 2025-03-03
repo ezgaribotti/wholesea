@@ -3,13 +3,15 @@
 namespace Modules\Auth\src\Entities;
 
 use App\Entities\Entity;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as HasActingAs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Auth\database\Factories\OperatorFactory;
 
-class Operator extends Entity
+class Operator extends Entity implements Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens, HasActingAs;
 
     protected $fillable = [
         'full_name',
@@ -21,6 +23,10 @@ class Operator extends Entity
 
     protected $hidden = [
         'password',
+    ];
+
+    protected $casts = [
+        'password' => 'hashed'
     ];
 
     protected static function newFactory(): object

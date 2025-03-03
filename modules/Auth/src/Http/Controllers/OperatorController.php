@@ -3,7 +3,6 @@
 namespace Modules\Auth\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Modules\Auth\src\Http\Requests\StoreOperatorRequest;
 use Modules\Auth\src\Http\Requests\UpdateOperatorRequest;
 use Modules\Auth\src\Http\Resources\OperatorResource;
@@ -25,9 +24,7 @@ class OperatorController extends Controller
 
     public function store(StoreOperatorRequest $request): object
     {
-        $this->operatorRepository->create(array_merge($request->validated(), [
-            'password' => Hash::make($request->password)
-        ]));
+        $this->operatorRepository->create($request->validated());
         return response()->justMessage('Operator successfully created.');
     }
 
