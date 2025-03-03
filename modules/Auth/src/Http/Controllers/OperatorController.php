@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Operators\src\Http\Controllers;
+namespace Modules\Auth\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Modules\Operators\src\Http\Requests\StoreOperatorRequest;
-use Modules\Operators\src\Http\Requests\UpdateOperatorRequest;
-use Modules\Operators\src\Http\Resources\OperatorResource;
-use Modules\Operators\src\Interfaces\OperatorRepositoryInterface;
+use Modules\Auth\src\Http\Requests\StoreOperatorRequest;
+use Modules\Auth\src\Http\Requests\UpdateOperatorRequest;
+use Modules\Auth\src\Http\Resources\OperatorResource;
+use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
 
 class OperatorController extends Controller
 {

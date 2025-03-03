@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Operators;
+namespace Modules\Auth;
 
 use App\Traits\SetupModule;
 use Illuminate\Support\ServiceProvider;
-use Modules\Operators\src\Interfaces\OperatorRepositoryInterface;
-use Modules\Operators\src\Repositories\OperatorRepository;
+use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
+use Modules\Auth\src\Repositories\OperatorRepository;
 
-class OperatorServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
     use SetupModule;
 

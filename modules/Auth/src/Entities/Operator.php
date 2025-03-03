@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Operators\src\Entities;
+namespace Modules\Auth\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
-use Modules\Operators\database\Factories\OperatorFactory;
+use Modules\Auth\database\Factories\OperatorFactory;
 
 class Operator extends Entity
 {

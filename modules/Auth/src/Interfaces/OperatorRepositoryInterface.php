@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Operators\src\Interfaces;
+namespace Modules\Auth\src\Interfaces;
 
 use App\Interfaces\RepositoryInterface;
 

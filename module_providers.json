@@ -1,4 +1,4 @@
 [
     "Modules\\Common\\CommonServiceProvider",
-    "Modules\\Operators\\OperatorServiceProvider"
+    "Modules\\Auth\\AuthServiceProvider"
 ]

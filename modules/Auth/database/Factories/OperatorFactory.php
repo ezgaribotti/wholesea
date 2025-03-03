@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Operators\database\Factories;
+namespace Modules\Auth\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Operators\src\Entities\Operator;
+use Modules\Auth\src\Entities\Operator;
 
 class OperatorFactory extends Factory
 {

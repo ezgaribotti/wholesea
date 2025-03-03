@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Operators\src\Repositories;
+namespace Modules\Auth\src\Repositories;
 
 use App\Repositories\Repository;
-use Modules\Operators\src\Entities\Operator;
-use Modules\Operators\src\Interfaces\OperatorRepositoryInterface;
+use Modules\Auth\src\Entities\Operator;
+use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
 
 class OperatorRepository extends Repository implements OperatorRepositoryInterface
 {
