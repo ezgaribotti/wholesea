@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Sanctum\Sanctum;
 use Modules\Auth\src\Entities\Operator;
+use Modules\Auth\src\Entities\Permission;
 use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class);
@@ -50,5 +51,16 @@ test('should delete an operator', function () {
     Sanctum::actingAs($operator);
 
     $response = $this->delete(route('api.operators.destroy', ['operator' => $operator]));
+    $response->assertOk();
+});
+
+test('should synchronize the permissions', function () {
+    $operator = Operator::factory()->create();
+    Sanctum::actingAs($operator);
+
+    $response = $this->postJson(route('api.sync-permissions'), [
+        'operator_id' => $operator->id,
+        'permissions' => [Permission::factory()->create()->id]
+    ]);
     $response->assertOk();
 });
