@@ -29,7 +29,12 @@ class AuthController extends Controller
             if ($operator->status == 'blocked') {
                 abort(403, 'Your account has been blocked.');
             }
-            $accessToken = $operator->createToken($request->ip())->plainTextToken;
+            $abilities = [];
+            foreach ($operator->permissions as $permission) {
+                $abilities[] = $permission->slug;
+            }
+
+            $accessToken = $operator->createToken($request->ip(), $abilities)->plainTextToken;
             return response()->success(new AccessTokenResource($accessToken));
         }
         abort(401, 'The internal code or password is wrong.');

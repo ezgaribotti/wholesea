@@ -29,6 +29,11 @@ class Operator extends Entity implements Authenticatable
         'password' => 'hashed'
     ];
 
+    public function permissions(): object
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
     protected static function newFactory(): object
     {
         return OperatorFactory::new();
