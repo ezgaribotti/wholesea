@@ -4,6 +4,7 @@ namespace Modules\Auth\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Auth\src\Http\Requests\StoreOperatorRequest;
+use Modules\Auth\src\Http\Requests\SyncPermissionsRequest;
 use Modules\Auth\src\Http\Requests\UpdateOperatorRequest;
 use Modules\Auth\src\Http\Resources\OperatorResource;
 use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
@@ -61,5 +62,13 @@ class OperatorController extends Controller
     {
         $this->operatorRepository->delete($id);
         return response()->justMessage('Operator successfully deleted.');
+    }
+
+    public function syncPermissions(SyncPermissionsRequest $request): object
+    {
+        $operator = $this->operatorRepository->find($request->operator_id);
+        $operator->permissions()->sync($request->permissions);
+        $operator->tokens()->delete();
+        return response()->justMessage('Permissions successfully synchronized.');
     }
 }

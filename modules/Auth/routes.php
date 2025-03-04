@@ -10,6 +10,7 @@ api_routes(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('operators', OperatorController::class);
+        Route::post('/sync-permissions', [OperatorController::class, 'syncPermissions'])->name('sync-permissions');
 
         Route::controller(PermissionController::class)->group(function () {
             Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
