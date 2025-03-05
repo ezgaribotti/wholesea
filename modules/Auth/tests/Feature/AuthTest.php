@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Modules\Auth\src\Entities\Operator;
+use Modules\Auth\src\Entities\PasswordResetToken;
 use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class);
@@ -48,5 +51,32 @@ test('should log out successfully', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
     $response = $this->post(route('api.logout'));
+    $response->assertOk();
+});
+
+test('should send link to reset password successfully', function () {
+    $operator = Operator::factory()->create();
+
+    $response = $this->postJson(route('api.forgot-password'), [
+        'email' => $operator->email,
+    ]);
+    $response->assertOk();
+});
+
+test('should reset password successfully', function () {
+    $operator = Operator::factory()->create();
+    $token = Str::random(56);
+
+    PasswordResetToken::factory()->create([
+        'email' => $operator->email,
+        'token' => Hash::make($token)
+    ]);
+
+    $password = 'password';
+    $response = $this->postJson(route('api.reset-password', ['token' => $token]), [
+        'email' => $operator->email,
+        'password' => $password,
+        'password_confirmation' => $password,
+    ]);
     $response->assertOk();
 });
