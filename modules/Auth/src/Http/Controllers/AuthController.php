@@ -5,15 +5,22 @@ namespace Modules\Auth\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Modules\Auth\src\Http\Requests\LoginRequest;
+use Modules\Auth\src\Http\Requests\ResetPasswordRequest;
+use Modules\Auth\src\Http\Requests\SendResetLinkRequest;
 use Modules\Auth\src\Http\Resources\AccessTokenResource;
 use Modules\Auth\src\Http\Resources\OperatorResource;
 use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
+use Modules\Auth\src\Interfaces\PasswordResetTokenRepositoryInterface;
+use Modules\Auth\src\Mail\ResetPassword;
 
 class AuthController extends Controller
 {
     public function __construct(
         protected OperatorRepositoryInterface $operatorRepository,
+        protected PasswordResetTokenRepositoryInterface $passwordResetTokenRepository,
     )
     {
     }
@@ -50,5 +57,43 @@ class AuthController extends Controller
     {
         $operator = $request->user();
         return response()->success(new OperatorResource($operator));
+    }
+
+    public function sendResetLink(SendResetLinkRequest $request): object
+    {
+        $operator = $this->operatorRepository->findByEmail($request->email);
+
+        if ($operator->status == 'blocked') {
+            abort(403, 'Your account has been blocked.');
+        }
+        $token = Str::random(56);
+
+        Mail::to($operator->email)->send(new ResetPassword($operator->email, $token));
+
+        $this->passwordResetTokenRepository->deleteByEmail($operator->email);
+        $this->passwordResetTokenRepository->create([
+            'email' => $operator->email,
+            'token' => Hash::make($token),
+        ]);
+        return response()->justMessage('Password reset link sent to your email.');
+    }
+
+    public function resetPassword(ResetPasswordRequest $request, string $token): object
+    {
+        $passwordReset = $this->passwordResetTokenRepository->findByEmail($request->email);
+
+        if (!Hash::check($token, $passwordReset->token)) {
+            abort(403, 'Invalid token.');
+        }
+        $this->passwordResetTokenRepository->deleteByEmail($passwordReset->email);
+
+        $status = 'active'; // If the operator is suspended, it is reactivated
+
+        $this->operatorRepository->updateByEmail([
+            'password' => Hash::make($request->password),
+            'status' => $status,
+        ], $passwordReset->email);
+
+        return response()->justMessage('Password successfully updated.');
     }
 }
