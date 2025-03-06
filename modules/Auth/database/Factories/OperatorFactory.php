@@ -15,7 +15,7 @@ class OperatorFactory extends Factory
         return [
             'full_name' => fake()->name,
             'internal_code' => fake()->unique()->unixTime,
-            'email' => fake()->unique()->email,
+            'email' => fake()->unique()->safeEmail,
             'password' => Hash::make('password'),
         ];
     }

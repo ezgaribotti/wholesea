@@ -43,14 +43,14 @@ test('should return an error when the operator is suspended or blocked', functio
 test('should return the authenticated operator', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
-    $response = $this->get(route('api.current-operator'));
+    $response = $this->getJson(route('api.current-operator'));
     $response->assertOk();
 });
 
 test('should log out successfully', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
-    $response = $this->post(route('api.logout'));
+    $response = $this->postJson(route('api.logout'));
     $response->assertOk();
 });
 
