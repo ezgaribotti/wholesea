@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('operator_permission', function (Blueprint $table) {
-            $table->foreignId('operator_id')->constrained('operators');
-            $table->foreignId('permission_id')->constrained('permissions');
+            $table->foreignId('operator_id')->constrained();
+            $table->foreignId('permission_id')->constrained();
         });
     }
 
