@@ -12,4 +12,9 @@ class CustomerAddressRepository extends Repository implements CustomerAddressRep
     {
         parent::__construct($address);
     }
+
+    public function getByCustomerId(int $customerId): object
+    {
+        return $this->entity->whereCustomerId($customerId)->get();
+    }
 }

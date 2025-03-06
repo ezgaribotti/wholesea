@@ -12,4 +12,9 @@ class CustomerRepository extends Repository implements CustomerRepositoryInterfa
     {
         parent::__construct($customer);
     }
+
+    public function findByEmail(string $email): ?object
+    {
+        return $this->entity->whereEmail($email)->first();
+    }
 }

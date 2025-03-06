@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('active')->default(true);
             $table->string('iso_code');
-            $table->integer('phone_code');
             $table->timestamps();
         });
     }
