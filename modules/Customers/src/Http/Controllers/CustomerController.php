@@ -3,6 +3,7 @@
 namespace Modules\Customers\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\Customers\src\Http\Requests\StoreCustomerRequest;
 use Modules\Customers\src\Http\Requests\UpdateCustomerRequest;
 use Modules\Customers\src\Http\Resources\CustomerResource;
@@ -16,10 +17,10 @@ class CustomerController extends Controller
     {
     }
 
-    public function index(): object
+    public function index(Request $request): object
     {
-        $customers = $this->customerRepository->all();
-        return response()->success(CustomerResource::collection($customers));
+        $customers = $this->customerRepository->paginate($request->filters);
+        return response()->withPaginate(CustomerResource::collection($customers));
     }
 
     public function store(StoreCustomerRequest $request): object

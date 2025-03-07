@@ -3,6 +3,7 @@
 namespace Modules\Auth\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\Auth\src\Http\Requests\StoreOperatorRequest;
 use Modules\Auth\src\Http\Requests\SyncPermissionsRequest;
 use Modules\Auth\src\Http\Requests\UpdateOperatorRequest;
@@ -17,10 +18,10 @@ class OperatorController extends Controller
     {
     }
 
-    public function index(): object
+    public function index(Request $request): object
     {
-        $operators = $this->operatorRepository->all();
-        return response()->success(OperatorResource::collection($operators));
+        $operators = $this->operatorRepository->paginate($request->filters);
+        return response()->withPaginate(OperatorResource::collection($operators));
     }
 
     public function store(StoreOperatorRequest $request): object

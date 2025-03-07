@@ -16,9 +16,28 @@ abstract class Repository implements RepositoryInterface
         return $this->entity->all();
     }
 
-    public function paginate(): object
+    public function paginate(?array $filters): object
     {
-        return $this->entity->simplePaginate(15);
+        return $this->entity
+            ->when($filters, function ($query) use ($filters) {
+                foreach ($filters as $filter) {
+                    $filter = to_object($filter);
+
+                    if (!$filter->value) {
+                        $query->whereNull($filter->by);
+                        continue;
+                    }
+                    if (is_array($filter->value)) {
+                        abort_if(count($filter->value) != 2, 422, 'Range must be between two values.');
+                        $query->whereBetween($filter->by, $filter->value);
+                        continue;
+                    }
+                    $filter->strict
+                        ? $query->where($filter->by, $filter->value)
+                        : $query->whereLike($filter->by, with_like($filter->value));
+                }
+            })
+            ->simplePaginate(15);
     }
 
     public function find($id): ?object
