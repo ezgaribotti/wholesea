@@ -6,12 +6,13 @@ use App\Entities\Entity;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Authenticatable as HasActingAs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Auth\database\Factories\OperatorFactory;
 
 class Operator extends Entity implements Authenticatable
 {
-    use HasFactory, HasApiTokens, HasActingAs;
+    use HasFactory, HasApiTokens, HasActingAs, SoftDeletes;
 
     protected $fillable = [
         'full_name',
