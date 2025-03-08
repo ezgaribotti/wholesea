@@ -4,11 +4,12 @@ namespace Modules\Customers\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Customers\database\Factories\CustomerFactory;
 
 class Customer extends Entity
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'first_name',
