@@ -18,6 +18,11 @@ class Customer extends Entity
         'full_phone',
     ];
 
+    public function addresses(): object
+    {
+        return $this->hasMany(CustomerAddress::class);
+    }
+
     protected static function newFactory(): object
     {
         return CustomerFactory::new();

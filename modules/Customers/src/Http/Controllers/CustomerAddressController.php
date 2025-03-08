@@ -3,9 +3,7 @@
 namespace Modules\Customers\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Modules\Customers\src\Http\Requests\StoreCustomerAddressRequest;
-use Modules\Customers\src\Http\Resources\CustomerAddressResource;
 use Modules\Customers\src\Interfaces\CustomerAddressRepositoryInterface;
 
 class CustomerAddressController extends Controller
@@ -14,14 +12,6 @@ class CustomerAddressController extends Controller
         protected CustomerAddressRepositoryInterface $addressRepository,
     )
     {
-    }
-
-    public function index(Request $request): object
-    {
-        abort_if(!$request->customer_id, 422, 'Customer id is required.');
-
-        $addresses = $this->addressRepository->getByCustomerId($request->customer_id);
-        return response()->success(CustomerAddressResource::collection($addresses));
     }
 
     public function store(StoreCustomerAddressRequest $request): object
