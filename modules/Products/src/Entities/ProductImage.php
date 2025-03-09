@@ -12,9 +12,9 @@ class ProductImage extends Entity
 
     protected $fillable = [
         'product_id',
-        'name',
-        'url',
-        'alt'
+        'path',
+        'full_url',
+        'description',
     ];
 
     protected static function newFactory(): object

@@ -13,6 +13,10 @@ class UploadProductImageRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'sku' => 'required|exists:products,sku',
+            'image' => 'required|image|mimes:webp|max:2048',
+            'description' => 'required',
+        ];
     }
 }

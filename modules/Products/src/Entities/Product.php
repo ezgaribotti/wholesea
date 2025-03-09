@@ -3,13 +3,13 @@
 namespace Modules\Products\src\Entities;
 
 use App\Entities\Entity;
-use App\Models\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Products\database\Factories\ProductFactory;
 
 class Product extends Entity
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -26,9 +26,9 @@ class Product extends Entity
         return $this->belongsTo(Category::class);
     }
 
-    protected static function booted(): void
+    public function images(): object
     {
-        static::addGlobalScope(new ActiveScope());
+        return $this->hasMany(ProductImage::class);
     }
 
     protected static function newFactory(): object
