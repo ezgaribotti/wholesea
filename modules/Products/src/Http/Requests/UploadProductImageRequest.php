@@ -15,8 +15,8 @@ class UploadProductImageRequest extends FormRequest
     {
         return [
             'sku' => 'required|exists:products,sku',
-            'image' => 'required|image|mimes:webp|max:2048',
-            'description' => 'required',
+            'image_file' => 'required|image|mimes:webp|max:2048',
+            'description' => 'nullable',
         ];
     }
 }

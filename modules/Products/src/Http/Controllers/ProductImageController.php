@@ -21,13 +21,13 @@ class ProductImageController extends Controller
     {
         $product = $this->productRepository->findBySku($request->sku);
 
-        $path = $request->image->store('images');
+        $path = $request->image_file->store('images');
 
         $this->imageRepository->create([
             'product_id' => $product->id,
             'path' => $path,
             'full_url' => Storage::url($path),
-            'description' => $request->description,
+            'description' => $request->description ?? $product->name,
         ]);
 
         return response()->justMessage('Image successfully uploaded.');
