@@ -36,8 +36,9 @@ class ProductImageController extends Controller
     public function destroy(string $id): object
     {
         $image = $this->imageRepository->findOrFail($id);
-
-        Storage::delete($image->path);
+        if (Storage::exists($image->path)) {
+            Storage::delete($image->path);
+        }
 
         $this->imageRepository->delete($id);
         return response()->justMessage('Image successfully deleted.');

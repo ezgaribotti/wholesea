@@ -15,12 +15,12 @@ class CustomerAddressFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),
-            'street_address' => fake()->streetAddress,
-            'city' => fake()->city,
-            'state' => fake()->citySuffix,
-            'postal_code' => fake()->postcode,
+            'street_address' => fake()->streetAddress(),
+            'city' => fake()->city(),
+            'state' => fake()->citySuffix(),
+            'postal_code' => fake()->postcode(),
             'country_id' => Country::factory(),
-            'description' => fake()->text,
+            'description' => fake()->text(),
         ];
     }
 }
