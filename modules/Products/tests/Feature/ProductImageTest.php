@@ -19,7 +19,7 @@ test('should upload a new product image', function () {
     $response = $this->postJson(route('api.product-images.store'), [
         'sku' => $product->sku,
         'description' => $product->name,
-        'image' => $imageFile,
+        'image_file' => $imageFile,
     ]);
     $response->assertOk();
 });
