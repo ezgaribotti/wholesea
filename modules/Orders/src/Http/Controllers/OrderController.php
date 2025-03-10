@@ -7,16 +7,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
 use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
+use Modules\Orders\src\Http\Resources\UrlResource;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
+use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
+use Modules\Orders\src\Services\StripeService;
 
 class OrderController extends Controller
 {
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductRepositoryInterface $productRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -38,7 +42,8 @@ class OrderController extends Controller
             'total_amount' => $totalAmount,
         ]);
 
-        collect($request->items)->each(function ($item) use (&$order, &$totalAmount) {
+        $items = [];
+        collect($request->items)->each(function ($item) use ($order, &$items, &$totalAmount) {
             $item = to_object($item);
             $product = $this->productRepository->find($item->product_id);
 
@@ -48,10 +53,25 @@ class OrderController extends Controller
             ]);
 
             $totalAmount += $product->unit_price * $item->quantity;
+            $items[] = [
+                'product' => $product,
+                'quantity' => $item->quantity,
+            ];
         });
-        $this->orderRepository->update(['total_amount' => $totalAmount], $order->id);
 
-        return response()->success(new OrderResource($order));
+        $this->orderRepository->update([
+            'total_amount' => $totalAmount
+        ], $order->id);
+
+        $customer = $order->customerAddress->customer;
+        $session = StripeService::createSession($trackingNumber, $customer->email, $items);
+
+        $this->paymentRepository->create([
+            'order_id' => $order->id,
+            'external_reference' => $session->id,
+        ]);
+
+        return response()->success(new UrlResource($session->url));
     }
 
     public function show(string $id): object
