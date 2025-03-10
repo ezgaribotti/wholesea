@@ -26,6 +26,11 @@ class CustomerAddress extends Entity
         return $this->belongsTo(Country::class);
     }
 
+    public function customer(): object
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     protected static function newFactory(): object
     {
         return CustomerAddressFactory::new();
