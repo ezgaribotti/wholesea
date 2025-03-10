@@ -13,9 +13,9 @@ class OperatorFactory extends Factory
     public function definition(): array
     {
         return [
-            'full_name' => fake()->name,
-            'internal_code' => fake()->unique()->unixTime,
-            'email' => fake()->unique()->email,
+            'full_name' => fake()->name(),
+            'internal_code' => fake()->unique()->unixTime(),
+            'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
         ];
     }

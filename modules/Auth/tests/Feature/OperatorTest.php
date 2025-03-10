@@ -11,7 +11,7 @@ uses(TestCase::class, DatabaseTransactions::class);
 test('should return list of operators', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
-    $response = $this->get(route('api.operators.index'));
+    $response = $this->getJson(route('api.operators.index'));
     $response->assertOk();
 });
 
@@ -32,7 +32,7 @@ test('should return an operator', function () {
     $operator = Operator::factory()->create();
     Sanctum::actingAs($operator);
 
-    $response = $this->get(route('api.operators.show', ['operator' => $operator]));
+    $response = $this->getJson(route('api.operators.show', ['operator' => $operator]));
     $response->assertOk();
 });
 
@@ -50,7 +50,7 @@ test('should delete an operator', function () {
     $operator = Operator::factory()->create();
     Sanctum::actingAs($operator);
 
-    $response = $this->delete(route('api.operators.destroy', ['operator' => $operator]));
+    $response = $this->deleteJson(route('api.operators.destroy', ['operator' => $operator]));
     $response->assertOk();
 });
 

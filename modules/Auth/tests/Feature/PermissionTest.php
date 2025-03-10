@@ -10,6 +10,6 @@ uses(TestCase::class, DatabaseTransactions::class);
 test('should return list of permissions', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
-    $response = $this->get(route('api.permissions.index'));
+    $response = $this->getJson(route('api.permissions.index'));
     $response->assertOk();
 });

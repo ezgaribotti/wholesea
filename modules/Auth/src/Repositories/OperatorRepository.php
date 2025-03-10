@@ -22,4 +22,9 @@ class OperatorRepository extends Repository implements OperatorRepositoryInterfa
     {
         return $this->entity->whereEmail($email)->first();
     }
+
+    public function updateByEmail(array $attributes, string $email): void
+    {
+        $this->entity->whereEmail($email)->update($attributes);
+    }
 }

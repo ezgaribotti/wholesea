@@ -1,4 +1,7 @@
 [
     "Modules\\Common\\CommonServiceProvider",
-    "Modules\\Auth\\AuthServiceProvider"
+    "Modules\\Auth\\AuthServiceProvider",
+    "Modules\\Customers\\CustomerServiceProvider",
+    "Modules\\Products\\ProductServiceProvider",
+    "Modules\\Orders\\OrderServiceProvider"
 ]

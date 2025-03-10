@@ -27,6 +27,16 @@ class ResponseMacroServiceProvider extends ServiceProvider
             ]);
         });
 
+        Response::macro('withPaginate', function (object $paginator) {
+            return Response::json([
+                'message' => null,
+                'data' => [
+                    'current_page' => $paginator->currentPage(),
+                    'items' => $paginator->items(),
+                ],
+            ]);
+        });
+
         Response::macro('error', function (int $statusCode = 500, ?string $message = null) {
             if (!in_array($statusCode, [400, 401, 403, 404, 422, 500])) {
                 $statusCode = 500;
