@@ -68,7 +68,7 @@ class OrderController extends Controller
 
         $this->paymentRepository->create([
             'order_id' => $order->id,
-            'external_reference' => $session->id,
+            'session_id' => $session->id,
         ]);
 
         return response()->success(new UrlResource($session->url));

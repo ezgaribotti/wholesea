@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained();
-            $table->string('external_reference');
+            $table->string('session_id');
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->timestamps();
         });
