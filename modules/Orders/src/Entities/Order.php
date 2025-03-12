@@ -29,6 +29,11 @@ class Order extends Entity
         return $this->belongsToMany(Product::class)->withPivot(['fixed_price', 'quantity']);
     }
 
+    public function payment(): object
+    {
+        return $this->hasOne(Payment::class);
+    }
+
     protected static function newFactory(): object
     {
         return OrderFactory::new();
