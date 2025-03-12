@@ -10,6 +10,13 @@ if (! function_exists('build_path')) {
     }
 }
 
+if (! function_exists('build_url')) {
+    function build_url(string $url, array $parameters = []): string
+    {
+        return $url . chr(63) . http_build_query($parameters);
+    }
+}
+
 if (! function_exists('to_object')) {
     function to_object(array $attributes = []): object
     {
@@ -18,7 +25,7 @@ if (! function_exists('to_object')) {
 }
 
 if (! function_exists('api_routes')) {
-    function api_routes($callback): object
+    function api_routes(callable $callback): object
     {
         return Route::middleware('api')->prefix('api')->name('api.')->group($callback);
     }

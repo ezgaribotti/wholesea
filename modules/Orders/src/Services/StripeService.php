@@ -2,14 +2,16 @@
 
 namespace Modules\Orders\src\Services;
 
+use Illuminate\Support\Facades\URL;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class StripeService
 {
-    public static function createSession(string $trackingNumber, string $email, array $items): object
+    public static function createSession(int $orderId, string $email, array $items): object
     {
-        $config = to_object(config('stripe'));
+        $config = to_object(config('common.stripe'));
+
         $lineItems = [];
         collect($items)->each(function ($item) use (&$lineItems, $config) {
             $item = to_object($item);
@@ -21,26 +23,24 @@ class StripeService
                     'product_data' => [
                         'name' => $product->name,
                     ],
-                    'unit_amount_decimal' => floatval($product->unit_price),
+                    'unit_amount_decimal' => $product->unit_price,
                 ],
                 'quantity' => $item->quantity,
             ];
         });
 
-        $identifier = [
-            'tracking_number' => $trackingNumber
-        ];
+        $parameters = ['order_id' => $orderId];
 
         $payload = [
-            'client_reference_id' => $trackingNumber,
-            'line_items' => $lineItems,
+            'mode' => $config->mode,
+            'client_reference_id' => $orderId,
             'customer_email' => $email,
+            'line_items' => $lineItems,
             'invoice_creation' => [
                 'enabled' => true,
             ],
-            'mode' => $config->mode,
-            'success_url' => route('api.stripe.success', $identifier),
-            'cancel_url' => route('api.stripe.cancel', $identifier),
+            'success_url' => URL::signedRoute('stripe.success', $parameters),
+            'cancel_url' => URL::signedRoute('stripe.cancel', $parameters),
         ];
 
         $client = new StripeClient($config->secret_key);
@@ -56,8 +56,8 @@ class StripeService
 
     public static function retrieveSession(string $id): object
     {
-        $config = to_object(config('stripe'));
-        $client = new StripeClient($config->secret_key);
+        $secretKey = config('common.stripe.secret_key');
+        $client = new StripeClient($secretKey);
 
         try {
             $session = $client->checkout->sessions->retrieve($id);
@@ -67,5 +67,20 @@ class StripeService
             abort(500, 'Error trying to retrieve Stripe checkout session.');
         }
         return $session;
+    }
+
+    public static function retrieveInvoice(string $id): object
+    {
+        $secretKey = config('common.stripe.secret_key');
+        $client = new StripeClient($secretKey);
+
+        try {
+            $invoice = $client->invoices->retrieve($id);
+        } catch (ApiErrorException $exception) {
+            logger()->error($exception->getMessage(), $exception->getJsonBody());
+
+            abort(500, 'Error trying to retrieve Stripe invoice.');
+        }
+        return $invoice;
     }
 }

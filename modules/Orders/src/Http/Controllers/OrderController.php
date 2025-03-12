@@ -33,7 +33,7 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingNumber = Str::ulid();
+        $trackingNumber = Str::uuid();
         $totalAmount = 0;
 
         $order = $this->orderRepository->create([
@@ -59,12 +59,10 @@ class OrderController extends Controller
             ];
         });
 
-        $this->orderRepository->update([
-            'total_amount' => $totalAmount
-        ], $order->id);
+        $this->orderRepository->update(['total_amount' => $totalAmount], $order->id);
 
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($trackingNumber, $customer->email, $items);
+        $session = StripeService::createSession($order->id, $customer->email, $items);
 
         $this->paymentRepository->create([
             'order_id' => $order->id,

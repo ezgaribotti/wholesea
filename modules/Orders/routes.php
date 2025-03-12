@@ -8,10 +8,11 @@ api_routes(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('orders', OrderController::class)->except(['destroy']);
     });
-    Route::prefix('stripe/{tracking_number}')
-        ->name('stripe.')
-        ->controller(StripeController::class)->group(function () {
-            Route::get('/success', 'success')->name('success');
-            Route::get('/cancel', 'cancel')->name('cancel');
-        });
 });
+
+Route::prefix('stripe')
+    ->name('stripe.')
+    ->controller(StripeController::class)->group(function () {
+        Route::get('/success', 'success')->name('success');
+        Route::get('/cancel', 'cancel')->name('cancel');
+    });
