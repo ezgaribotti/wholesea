@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained();
             $table->string('external_reference');
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
+            $table->timestamp('issued_at')->nullable();
             $table->timestamps();
         });
     }

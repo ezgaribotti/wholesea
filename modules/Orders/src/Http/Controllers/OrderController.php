@@ -5,15 +5,15 @@ namespace Modules\Orders\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
 use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
-use Modules\Orders\src\Http\Resources\UrlToPayResource;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
+use Modules\Orders\src\Http\Resources\UrlToPayResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
-use Modules\Orders\src\Services\StripeService;
 
 class OrderController extends Controller
 {
@@ -45,6 +45,7 @@ class OrderController extends Controller
         $items = [];
         collect($request->items)->each(function ($item) use ($order, &$items, &$totalAmount) {
             $item = to_object($item);
+
             $product = $this->productRepository->find($item->product_id);
 
             $order->products()->attach($product->id, [
@@ -58,11 +59,14 @@ class OrderController extends Controller
                 'quantity' => $item->quantity,
             ];
         });
+        $this->orderRepository->update([
+            'total_amount' => $totalAmount
+        ], $order->id);
 
-        $this->orderRepository->update(['total_amount' => $totalAmount], $order->id);
+        $routeNames = config('orders.stripe.route_names');
 
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($order->id, $customer->email, $items);
+        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames);
 
         $this->paymentRepository->create([
             'order_id' => $order->id,

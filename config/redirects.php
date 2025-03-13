@@ -4,10 +4,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Client url
+    | Client URL
     |--------------------------------------------------------------------------
     |
-    | This url is used when you need to redirect to the client.
+    | This URL is used when you need to redirect to the client.
     |
     */
 

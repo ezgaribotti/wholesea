@@ -4,11 +4,11 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
-use Modules\Orders\src\Services\StripeService;
 
-class StripeController extends Controller
+class ProcessPaymentController extends Controller
 {
     public function __construct(
         protected PaymentRepositoryInterface $paymentRepository,
@@ -25,7 +25,7 @@ class StripeController extends Controller
             ]);
         }
 
-        $order = $this->orderRepository->find($request->order_id);
+        $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
         if ($payment->status != 'in_progress') {
             return redirect()->toClient([
@@ -40,6 +40,7 @@ class StripeController extends Controller
             ]);
         }
         $this->paymentRepository->update([
+            'issued_at' => $request->issued_at,
             'status' => $session->payment_status
         ], $payment->id);
 
@@ -56,7 +57,7 @@ class StripeController extends Controller
             ]);
         }
 
-        $order = $this->orderRepository->find($request->order_id);
+        $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
         if ($payment->status != 'in_progress') {
             return redirect()->toClient([
@@ -65,7 +66,10 @@ class StripeController extends Controller
         }
 
         $this->orderRepository->update(['status' => 'canceled'], $order->id);
-        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
+        $this->paymentRepository->update([
+            'issued_at' => $request->issued_at,
+            'status' => 'canceled'
+        ], $payment->id);
 
         return redirect()->toClient([
             'message' => 'Payment successfully canceled.'

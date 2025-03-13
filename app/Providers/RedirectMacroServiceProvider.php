@@ -16,7 +16,7 @@ class RedirectMacroServiceProvider extends ServiceProvider
         Redirect::macro('toClient', function (array $parameters = []) {
             $url = config('redirects.client_url');
 
-            return Redirect::away($url . QUESTION_MARK . http_build_query($parameters));
+            return Redirect::away($url . chr(63) . http_build_query($parameters));
         });
     }
 }

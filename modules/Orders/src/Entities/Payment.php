@@ -14,6 +14,7 @@ class Payment extends Entity
         'order_id',
         'external_reference',
         'status',
+        'issued_at',
     ];
 
     protected static function newFactory(): object
