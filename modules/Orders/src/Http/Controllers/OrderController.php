@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
 use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
-use Modules\Orders\src\Http\Resources\UrlResource;
+use Modules\Orders\src\Http\Resources\UrlToPayResource;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
@@ -66,10 +66,10 @@ class OrderController extends Controller
 
         $this->paymentRepository->create([
             'order_id' => $order->id,
-            'session_id' => $session->id,
+            'external_reference' => $session->id,
         ]);
 
-        return response()->success(new UrlResource($session->url));
+        return response()->success(new UrlToPayResource($session->url));
     }
 
     public function show(string $id): object

@@ -19,79 +19,56 @@ class StripeController extends Controller
 
     public function success(Request $request): object
     {
-        $clientUrl = config('common.client_url');
-
         if (!$request->hasValidSignature()) {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Invalid signature.',
-            ]));
+            return redirect()->toClient([
+                'message' => 'Invalid signature.'
+            ]);
         }
 
         $order = $this->orderRepository->find($request->order_id);
-        if (!$order) {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Order not found.',
-            ]));
-        }
-
         $payment = $order->payment;
         if ($payment->status != 'in_progress') {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Payment has already been processed.',
-            ]));
+            return redirect()->toClient([
+                'message' => 'Payment has already been processed.'
+            ]);
         }
-        $session = StripeService::retrieveSession($payment->session_id);
+        $session = StripeService::retrieveSession($payment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Payment is not processable.',
-            ]));
+            return redirect()->toClient([
+                'message' => 'Payment is not processable.'
+            ]);
         }
-        $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
+        $this->paymentRepository->update([
+            'status' => $session->payment_status
+        ], $payment->id);
 
-        return redirect()->away(build_url($clientUrl, [
-            'has_error' => 0,
-            'message' => 'Payment successfully paid.',
-        ]));
+        return redirect()->toClient([
+            'message' => 'Payment successfully paid.'
+        ]);
     }
 
     public function cancel(Request $request): object
     {
-        $clientUrl = config('common.client_url');
-
         if (!$request->hasValidSignature()) {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Invalid signature.',
-            ]));
+            return redirect()->toClient([
+                'message' => 'Invalid signature.'
+            ]);
         }
 
         $order = $this->orderRepository->find($request->order_id);
-        if (!$order) {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Order not found.',
-            ]));
-        }
-
         $payment = $order->payment;
         if ($payment->status != 'in_progress') {
-            return redirect()->away(build_url($clientUrl, [
-                'has_error' => 1,
-                'message' => 'Payment has already been processed.',
-            ]));
+            return redirect()->toClient([
+                'message' => 'Payment has already been processed.'
+            ]);
         }
 
         $this->orderRepository->update(['status' => 'canceled'], $order->id);
         $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
-        return redirect()->away(build_url($clientUrl, [
-            'has_error' => 0,
-            'message' => 'Payment successfully canceled.',
-        ]));
+        return redirect()->toClient([
+            'message' => 'Payment successfully canceled.'
+        ]);
     }
 }
