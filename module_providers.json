@@ -3,5 +3,6 @@
     "Modules\\Auth\\AuthServiceProvider",
     "Modules\\Customers\\CustomerServiceProvider",
     "Modules\\Products\\ProductServiceProvider",
-    "Modules\\Orders\\OrderServiceProvider"
+    "Modules\\Orders\\OrderServiceProvider",
+    "Modules\\Shipments\\ShipmentServiceProvider"
 ]

@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Auth\src\Entities\Operator as Foundation;
+use Modules\Auth\src\Entities\Operator as Base;
 
-class Operator extends Foundation
+class Operator extends Base
 {
 }
