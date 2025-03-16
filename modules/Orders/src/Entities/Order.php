@@ -18,7 +18,7 @@ class Order extends Entity
         'customer_address_id',
         'total_amount',
         'external_reference',
-        'issued_at'
+        'issued_at',
     ];
 
     public function customerAddress(): object

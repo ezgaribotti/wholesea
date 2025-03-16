@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('tracking_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('order')->default(0);
+            $table->string('name')->unique();
+            $table->integer('priority');
             $table->timestamps();
         });
     }

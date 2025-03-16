@@ -1,16 +1,20 @@
 <?php
 
-namespace Modules\Orders\src\Http\Controllers;
+namespace Modules\Shipments\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
-use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
+use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
+use Modules\Shipments\src\Interfaces\TrackingRepositoryInterface;
+use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
 
 class ProcessPaymentController extends Controller
 {
     public function __construct(
-        protected OrderRepositoryInterface $orderRepository,
+        protected ShipmentRepositoryInterface $shipmentRepository,
+        protected TrackingStatusRepositoryInterface $trackingStatusRepository,
+        protected TrackingRepositoryInterface $trackingRepository,
     )
     {
     }
@@ -23,13 +27,13 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $order = $this->orderRepository->find($request->reference_id);
-        if ($order->status != 'in_progress') {
+        $shipment = $this->shipmentRepository->find($request->reference_id);
+        if ($shipment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
-        $session = StripeService::retrieveSession($order->external_reference);
+        $session = StripeService::retrieveSession($shipment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return redirect()->toClient([
@@ -37,13 +41,20 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $this->orderRepository->update([
+        $this->shipmentRepository->update([
             'status' => $session->payment_status,
             'issued_at' => $request->issued_at,
-        ], $order->id);
+        ], $shipment->id);
+
+        $trackingStatus = $this->trackingStatusRepository->findByName('pending');
+
+        $this->trackingRepository->create([
+            'shipment_id' => $shipment->id,
+            'tracking_status_id' => $trackingStatus->id,
+        ]);
 
         return redirect()->toClient([
-            'message' => 'Order successfully paid.'
+            'message' => 'Shipment successfully paid.'
         ]);
     }
 
@@ -55,20 +66,20 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $order = $this->orderRepository->find($request->reference_id);
-        if ($order->status != 'in_progress') {
+        $shipment = $this->shipmentRepository->find($request->reference_id);
+        if ($shipment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
 
-        $this->orderRepository->update([
+        $this->shipmentRepository->update([
             'issued_at' => $request->issued_at,
             'status' => 'canceled',
-        ], $order->id);
+        ], $shipment->id);
 
         return redirect()->toClient([
-            'message' => 'Order successfully canceled.'
+            'message' => 'Shipment successfully canceled.'
         ]);
     }
 }

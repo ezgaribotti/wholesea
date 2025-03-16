@@ -12,7 +12,7 @@ class TrackingStatus extends Entity
 
     protected $fillable = [
         'name',
-        'order',
+        'priority',
     ];
 
     protected static function newFactory(): object

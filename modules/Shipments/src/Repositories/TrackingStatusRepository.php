@@ -12,4 +12,9 @@ class TrackingStatusRepository extends Repository implements TrackingStatusRepos
     {
         parent::__construct($status);
     }
+
+    public function findByName(string $name): object
+    {
+        return $this->entity->whereName($name)->firstOrFail();
+    }
 }
