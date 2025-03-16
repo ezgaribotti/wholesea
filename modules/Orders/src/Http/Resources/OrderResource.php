@@ -16,6 +16,7 @@ class OrderResource extends JsonResource
             'customer_address' => new CustomerAddressResource($this->customerAddress),
             'items' => ItemResource::collection($this->products),
             'total_amount' => $this->total_amount,
+            'issued_at' => $this->issued_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

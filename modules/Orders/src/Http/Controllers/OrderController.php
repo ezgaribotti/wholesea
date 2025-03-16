@@ -4,7 +4,6 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
 use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
@@ -12,7 +11,6 @@ use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
 use Modules\Orders\src\Http\Resources\UrlToPayResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
-use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
 class OrderController extends Controller
@@ -20,7 +18,6 @@ class OrderController extends Controller
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductRepositoryInterface $productRepository,
-        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -33,19 +30,16 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingNumber = Str::uuid();
-        $totalAmount = 0;
-
+        $trackingNumber = uniqid();
         $order = $this->orderRepository->create([
-            'customer_address_id' => $request->customer_address_id,
             'tracking_number' => $trackingNumber,
-            'total_amount' => $totalAmount,
+            'customer_address_id' => $request->customer_address_id,
         ]);
 
+        $totalAmount = 0;
         $items = [];
         collect($request->items)->each(function ($item) use ($order, &$items, &$totalAmount) {
             $item = to_object($item);
-
             $product = $this->productRepository->find($item->product_id);
 
             $order->products()->attach($product->id, [
@@ -55,23 +49,20 @@ class OrderController extends Controller
 
             $totalAmount += $product->unit_price * $item->quantity;
             $items[] = [
-                'product' => $product,
+                'name' => $product->name,
+                'unit_amount' => $product->unit_price,
                 'quantity' => $item->quantity,
             ];
         });
-        $this->orderRepository->update([
-            'total_amount' => $totalAmount
-        ], $order->id);
-
-        $routeNames = config('orders.stripe.route_names');
+        $routeNames = config('orders.route_names');
 
         $customer = $order->customerAddress->customer;
         $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames);
 
-        $this->paymentRepository->create([
-            'order_id' => $order->id,
+        $this->orderRepository->update([
+            'total_amount' => $totalAmount,
             'external_reference' => $session->id,
-        ]);
+        ], $order->id);
 
         return response()->success(new UrlToPayResource($session->url));
     }

@@ -8,11 +8,11 @@ api_routes(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('orders', OrderController::class)->except(['destroy']);
     });
-
-    Route::prefix('process-payments')
-        ->name('process-payments.')
-        ->controller(ProcessPaymentController::class)->group(function () {
-            Route::get('/success', 'success')->name('success');
-            Route::get('/cancel', 'cancel')->name('cancel');
-        });
 });
+
+Route::prefix('order-payments')
+    ->name('order-payments.')
+    ->controller(ProcessPaymentController::class)->group(function () {
+        Route::get('/success', 'success')->name('success');
+        Route::get('/cancel', 'cancel')->name('cancel');
+    });

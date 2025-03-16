@@ -17,6 +17,8 @@ class Order extends Entity
         'status',
         'customer_address_id',
         'total_amount',
+        'external_reference',
+        'issued_at'
     ];
 
     public function customerAddress(): object
@@ -26,12 +28,10 @@ class Order extends Entity
 
     public function products(): object
     {
-        return $this->belongsToMany(Product::class)->withPivot(['fixed_price', 'quantity']);
-    }
-
-    public function payment(): object
-    {
-        return $this->hasOne(Payment::class);
+        return $this->belongsToMany(Product::class)->withPivot([
+            'fixed_price',
+            'quantity'
+        ]);
     }
 
     protected static function newFactory(): object

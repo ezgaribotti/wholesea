@@ -20,9 +20,9 @@ class StripeService
                 'price_data' => [
                     'currency' => $config->currency,
                     'product_data' => [
-                        'name' => $item->product->name,
+                        'name' => $item->name,
                     ],
-                    'unit_amount_decimal' => $item->product->unit_price,
+                    'unit_amount_decimal' => $item->unit_amount,
                 ],
                 'quantity' => $item->quantity,
             ];

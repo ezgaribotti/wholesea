@@ -6,12 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
-use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 
 class ProcessPaymentController extends Controller
 {
     public function __construct(
-        protected PaymentRepositoryInterface $paymentRepository,
         protected OrderRepositoryInterface $orderRepository,
     )
     {
@@ -26,23 +24,23 @@ class ProcessPaymentController extends Controller
         }
 
         $order = $this->orderRepository->find($request->reference_id);
-        $payment = $order->payment;
-        if ($payment->status != 'in_progress') {
+        if ($order->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
-        $session = StripeService::retrieveSession($payment->external_reference);
+        $session = StripeService::retrieveSession($order->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return redirect()->toClient([
                 'message' => 'Payment is not processable.'
             ]);
         }
-        $this->paymentRepository->update([
+
+        $this->orderRepository->update([
+            'status' => $session->payment_status,
             'issued_at' => $request->issued_at,
-            'status' => $session->payment_status
-        ], $payment->id);
+        ], $order->id);
 
         return redirect()->toClient([
             'message' => 'Payment successfully paid.'
@@ -58,18 +56,16 @@ class ProcessPaymentController extends Controller
         }
 
         $order = $this->orderRepository->find($request->reference_id);
-        $payment = $order->payment;
-        if ($payment->status != 'in_progress') {
+        if ($order->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
 
-        $this->orderRepository->update(['status' => 'canceled'], $order->id);
-        $this->paymentRepository->update([
+        $this->orderRepository->update([
             'issued_at' => $request->issued_at,
-            'status' => 'canceled'
-        ], $payment->id);
+            'status' => 'canceled',
+        ], $order->id);
 
         return redirect()->toClient([
             'message' => 'Payment successfully canceled.'
