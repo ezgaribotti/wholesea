@@ -2,11 +2,11 @@
 
 namespace Modules\Shipments\src\Entities;
 
-use App\Entities\Entity;
+use App\Entities\NoTimestamp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Shipments\database\Factories\TrackingStatusFactory;
 
-class TrackingStatus extends Entity
+class TrackingStatus extends NoTimestamp
 {
     use HasFactory;
 

@@ -2,11 +2,11 @@
 
 namespace Modules\Shipments\src\Entities;
 
-use App\Entities\Entity;
+use App\Entities\NoTimestamp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Shipments\database\Factories\ShipmentItemFactory;
 
-class ShipmentItem extends Entity
+class ShipmentItem extends NoTimestamp
 {
     use HasFactory;
 

@@ -2,12 +2,12 @@
 
 namespace Modules\Customers\src\Entities;
 
-use App\Entities\Entity;
+use App\Entities\NoTimestamp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Common\src\Entities\Scopes\ActiveScope;
 use Modules\Customers\database\Factories\CountryFactory;
 
-class Country extends Entity
+class Country extends NoTimestamp
 {
     use HasFactory;
 

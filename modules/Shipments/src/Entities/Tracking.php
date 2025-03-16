@@ -14,6 +14,10 @@ class Tracking extends Entity
         'shipment_id',
         'tracking_status_id',
     ];
+    public function trackingStatus(): object
+    {
+        return $this->belongsTo(TrackingStatus::class);
+    }
 
     protected static function newFactory(): object
     {

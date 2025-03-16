@@ -15,7 +15,6 @@ return new class extends Migration
             $table->decimal('weight');
             $table->integer('quantity')->default(1);
             $table->string('description')->nullable();
-            $table->timestamps();
         });
     }
 

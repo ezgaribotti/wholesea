@@ -4,11 +4,12 @@ namespace Modules\Shipments\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
-use Modules\Shipments\src\Http\Resources\UrlToPayResource;
+use Modules\Shipments\src\Http\Resources\ShipmentSummaryResource;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 
@@ -24,7 +25,7 @@ class ShipmentController extends Controller
     public function index(Request $request)
     {
         $shipments = $this->shipmentRepository->paginate($request->filters);
-        return response()->withPaginate(ShipmentResource::collection($shipments));
+        return response()->withPaginate(ShipmentSummaryResource::collection($shipments));
     }
 
     public function store(StoreShipmentRequest $request)

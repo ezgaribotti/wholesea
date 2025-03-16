@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('path');
             $table->string('full_url');
             $table->string('description');
-            $table->timestamps();
         });
     }
 

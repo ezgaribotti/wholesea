@@ -15,6 +15,7 @@ class OrderFactory extends Factory
         return [
             'tracking_number' => uniqid(),
             'customer_address_id' => CustomerAddress::factory(),
+            'total_amount' => 0,
         ];
     }
 }

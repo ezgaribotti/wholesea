@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('tracking_number')->unique();
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->foreignId('customer_address_id')->constrained();
-            $table->decimal('total_amount')->default(0);
+            $table->decimal('total_amount');
             $table->string('external_reference')->nullable();
             $table->timestamp('issued_at')->nullable();
             $table->timestamps();

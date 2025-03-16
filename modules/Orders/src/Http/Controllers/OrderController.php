@@ -4,12 +4,12 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
 use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
-use Modules\Orders\src\Http\Resources\UrlToPayResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
@@ -31,12 +31,14 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request): object
     {
         $trackingNumber = uniqid();
+        $totalAmount = 0;
+
         $order = $this->orderRepository->create([
             'tracking_number' => $trackingNumber,
             'customer_address_id' => $request->customer_address_id,
+            'total_amount' => $totalAmount,
         ]);
 
-        $totalAmount = 0;
         $items = [];
         collect($request->items)->each(function ($item) use ($order, &$items, &$totalAmount) {
             $item = to_object($item);

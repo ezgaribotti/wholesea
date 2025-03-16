@@ -13,6 +13,7 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'tracking_number' => $this->tracking_number,
             'status' => $this->status,
+            'customer' => new CustomerResource($this->customerAddress->customer),
             'customer_address' => new CustomerAddressResource($this->customerAddress),
             'items' => ItemResource::collection($this->products),
             'total_amount' => $this->total_amount,
