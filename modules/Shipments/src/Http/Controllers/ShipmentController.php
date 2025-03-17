@@ -10,6 +10,7 @@ use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
 use Modules\Shipments\src\Http\Resources\ShipmentSummaryResource;
+use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 
@@ -18,6 +19,7 @@ class ShipmentController extends Controller
     public function __construct(
         protected ShipmentRepositoryInterface $shipmentRepository,
         protected ShipmentItemRepositoryInterface $itemRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -52,8 +54,8 @@ class ShipmentController extends Controller
             ]);
 
         });
-
         $label = 'Payment for shipping';
+
         $items = [[
             'name' => $label,
             'unit_amount' => $cost,
@@ -65,8 +67,12 @@ class ShipmentController extends Controller
         $customer = $shipment->customerAddress->customer;
         $session = StripeService::createSession($shipment->id, $customer->email, $items, $routeNames);
 
+        $payment = $this->paymentRepository->create([
+            'external_reference' => $session->id
+        ]);
+
         $this->shipmentRepository->update([
-            'external_reference' => $session->id,
+            'payment_id' => $payment->id,
         ], $shipment->id);
 
         return response()->success(new UrlToPayResource($session->url));

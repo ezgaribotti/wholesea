@@ -11,11 +11,9 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number');
-            $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->foreignId('customer_address_id')->constrained();
             $table->decimal('cost');
-            $table->string('external_reference')->nullable();
-            $table->timestamp('issued_at')->nullable();
+            $table->foreignId('payment_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

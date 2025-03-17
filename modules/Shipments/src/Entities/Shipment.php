@@ -5,6 +5,7 @@ namespace Modules\Shipments\src\Entities;
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Common\src\Entities\CustomerAddress;
+use Modules\Common\src\Entities\Payment;
 use Modules\Shipments\database\Factories\ShipmentFactory;
 
 class Shipment extends Entity
@@ -13,11 +14,9 @@ class Shipment extends Entity
 
     protected $fillable = [
         'tracking_number',
-        'status',
         'customer_address_id',
         'cost',
-        'external_reference',
-        'issued_at',
+        'payment_id',
     ];
 
     public function customerAddress(): object
@@ -28,6 +27,11 @@ class Shipment extends Entity
     public function items(): object
     {
         return $this->hasMany(ShipmentItem::class);
+    }
+
+    public function payment(): object
+    {
+        return $this->belongsTo(Payment::class);
     }
 
     public function statuses(): object

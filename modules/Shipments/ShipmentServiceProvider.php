@@ -4,10 +4,12 @@ namespace Modules\Shipments;
 
 use App\Traits\SetupModule;
 use Illuminate\Support\ServiceProvider;
+use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
+use Modules\Shipments\src\Repositories\PaymentRepository;
 use Modules\Shipments\src\Repositories\ShipmentItemRepository;
 use Modules\Shipments\src\Repositories\ShipmentRepository;
 use Modules\Shipments\src\Repositories\TrackingRepository;
@@ -23,6 +25,7 @@ class ShipmentServiceProvider extends ServiceProvider
         $this->app->bind(ShipmentItemRepositoryInterface::class, ShipmentItemRepository::class);
         $this->app->bind(TrackingStatusRepositoryInterface::class, TrackingStatusRepository::class);
         $this->app->bind(TrackingRepositoryInterface::class, TrackingRepository::class);
+        $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
     }
 
     public function boot(): void

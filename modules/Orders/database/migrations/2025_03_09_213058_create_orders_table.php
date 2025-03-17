@@ -13,8 +13,7 @@ return new class extends Migration
             $table->string('tracking_number')->unique();
             $table->foreignId('customer_address_id')->constrained();
             $table->decimal('total_amount');
-            $table->foreignId('payment_id')->nullable()
-                ->constrained();
+            $table->foreignId('payment_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

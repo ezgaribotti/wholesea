@@ -5,6 +5,7 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
+use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
@@ -15,6 +16,7 @@ class ProcessPaymentController extends Controller
         protected ShipmentRepositoryInterface $shipmentRepository,
         protected TrackingStatusRepositoryInterface $trackingStatusRepository,
         protected TrackingRepositoryInterface $trackingRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -28,12 +30,13 @@ class ProcessPaymentController extends Controller
         }
 
         $shipment = $this->shipmentRepository->find($request->reference_id);
-        if ($shipment->status != 'in_progress') {
+        $payment = $shipment->payment;
+        if ($payment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
-        $session = StripeService::retrieveSession($shipment->external_reference);
+        $session = StripeService::retrieveSession($payment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return redirect()->toClient([
@@ -41,10 +44,10 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $this->shipmentRepository->update([
+        $this->paymentRepository->update([
             'status' => $session->payment_status,
             'issued_at' => $request->issued_at,
-        ], $shipment->id);
+        ], $payment->id);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('pending');
 
@@ -67,16 +70,17 @@ class ProcessPaymentController extends Controller
         }
 
         $shipment = $this->shipmentRepository->find($request->reference_id);
-        if ($shipment->status != 'in_progress') {
+        $payment = $shipment->payment;
+        if ($payment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
 
-        $this->shipmentRepository->update([
-            'issued_at' => $request->issued_at,
+        $this->paymentRepository->update([
             'status' => 'canceled',
-        ], $shipment->id);
+            'issued_at' => $request->issued_at,
+        ], $payment->id);
 
         return redirect()->toClient([
             'message' => 'Shipment successfully canceled.'
