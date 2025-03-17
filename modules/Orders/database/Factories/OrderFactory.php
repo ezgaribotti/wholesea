@@ -13,9 +13,9 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'tracking_number' => fake()->uuid(),
+            'tracking_number' => uniqid(),
             'customer_address_id' => CustomerAddress::factory(),
-            'total_amount' => fake()->randomFloat(2, 10, 100),
+            'total_amount' => 0,
         ];
     }
 }

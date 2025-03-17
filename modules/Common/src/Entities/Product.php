@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Products\src\Entities\Product as Foundation;
+use Modules\Products\src\Entities\Product as Base;
 
-class Product extends Foundation
+class Product extends Base
 {
 }

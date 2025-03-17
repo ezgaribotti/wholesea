@@ -2,11 +2,11 @@
 
 namespace Modules\Products\src\Entities;
 
-use App\Entities\Entity;
+use App\Entities\NoTimestamp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Products\database\Factories\ProductImageFactory;
 
-class ProductImage extends Entity
+class ProductImage extends NoTimestamp
 {
     use HasFactory;
 

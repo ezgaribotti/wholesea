@@ -17,6 +17,8 @@ class CustomerAddressResource extends JsonResource
             'postal_code' => $this->postal_code,
             'country' => new CountryResource($this->country),
             'description' => $this->description,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

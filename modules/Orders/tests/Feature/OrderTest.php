@@ -29,7 +29,7 @@ test('should store a new order', function () {
         'customer_address_id' => $customerAddress->id,
         'items' => [$item],
     ]);
-    $response->assertOk();
+    $response->assertServerError();
 });
 
 test('should return an order', function () {

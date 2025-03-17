@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Modules\Products\src\Http\Requests\StoreProductRequest;
 use Modules\Products\src\Http\Requests\UpdateProductRequest;
 use Modules\Products\src\Http\Resources\ProductResource;
+use Modules\Products\src\Http\Resources\ProductSummaryResource;
 use Modules\Products\src\Interfaces\ProductRepositoryInterface;
 
 class ProductController extends Controller
@@ -20,7 +21,7 @@ class ProductController extends Controller
     public function index(Request $request): object
     {
         $products = $this->productRepository->paginate($request->filters);
-        return response()->withPaginate(ProductResource::collection($products));
+        return response()->withPaginate(ProductSummaryResource::collection($products));
     }
 
     public function store(StoreProductRequest $request): object
