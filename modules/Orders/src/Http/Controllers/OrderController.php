@@ -11,6 +11,7 @@ use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
+use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
 class OrderController extends Controller
@@ -18,6 +19,7 @@ class OrderController extends Controller
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductRepositoryInterface $productRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -61,9 +63,13 @@ class OrderController extends Controller
         $customer = $order->customerAddress->customer;
         $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames);
 
+        $payment = $this->paymentRepository->create([
+            'external_reference' => $session->id,
+        ]);
+
         $this->orderRepository->update([
             'total_amount' => $totalAmount,
-            'external_reference' => $session->id,
+            'payment_id' => $payment->id,
         ], $order->id);
 
         return response()->success(new UrlToPayResource($session->url));
