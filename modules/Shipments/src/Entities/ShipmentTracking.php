@@ -4,9 +4,9 @@ namespace Modules\Shipments\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Shipments\database\Factories\TrackingFactory;
+use Modules\Shipments\database\Factories\ShipmentTrackingFactory;
 
-class Tracking extends Entity
+class ShipmentTracking extends Entity
 {
     use HasFactory;
 
@@ -14,6 +14,7 @@ class Tracking extends Entity
         'shipment_id',
         'tracking_status_id',
     ];
+
     public function trackingStatus(): object
     {
         return $this->belongsTo(TrackingStatus::class);
@@ -21,6 +22,6 @@ class Tracking extends Entity
 
     protected static function newFactory(): object
     {
-        return TrackingFactory::new();
+        return ShipmentTrackingFactory::new();
     }
 }

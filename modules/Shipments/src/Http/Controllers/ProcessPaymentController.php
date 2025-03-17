@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
-use Modules\Shipments\src\Interfaces\TrackingRepositoryInterface;
+use Modules\Shipments\src\Interfaces\ShipmentTrackingRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
 
 class ProcessPaymentController extends Controller
@@ -15,7 +15,7 @@ class ProcessPaymentController extends Controller
     public function __construct(
         protected ShipmentRepositoryInterface $shipmentRepository,
         protected TrackingStatusRepositoryInterface $trackingStatusRepository,
-        protected TrackingRepositoryInterface $trackingRepository,
+        protected ShipmentTrackingRepositoryInterface $trackingRepository,
         protected PaymentRepositoryInterface $paymentRepository,
     )
     {
@@ -50,7 +50,6 @@ class ProcessPaymentController extends Controller
         ], $payment->id);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('pending');
-
         $this->trackingRepository->create([
             'shipment_id' => $shipment->id,
             'tracking_status_id' => $trackingStatus->id,

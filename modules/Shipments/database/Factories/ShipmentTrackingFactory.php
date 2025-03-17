@@ -4,7 +4,7 @@ namespace Modules\Shipments\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TrackingFactory extends Factory
+class ShipmentTrackingFactory extends Factory
 {
     public function definition(): array
     {

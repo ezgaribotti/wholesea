@@ -36,7 +36,7 @@ class Shipment extends Entity
 
     public function statuses(): object
     {
-        return $this->hasMany(Tracking::class);
+        return $this->hasMany(ShipmentTracking::class);
     }
 
     protected static function newFactory(): object
