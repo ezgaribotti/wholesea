@@ -44,8 +44,6 @@ test('should update an order', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
     $order = Order::factory()->create();
-    $response = $this->putJson(route('api.orders.update', [
-        'order' => $order
-    ]), Order::factory()->make(['status' => 'processing'])->toArray());
+    $response = $this->putJson(route('api.orders.update', ['order' => $order]));
     $response->assertOk();
 });

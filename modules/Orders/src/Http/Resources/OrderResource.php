@@ -12,7 +12,7 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'tracking_number' => $this->tracking_number,
-            'payment_status' => $this->payment->status,
+            'payment' => new PaymentResource($this->payment),
             'customer' => new CustomerResource($this->customerAddress->customer),
             'customer_address' => new CustomerAddressResource($this->customerAddress),
             'items' => ItemResource::collection($this->products),

@@ -14,6 +14,7 @@ class Shipment extends Entity
 
     protected $fillable = [
         'tracking_number',
+        'tracking_status_id',
         'customer_address_id',
         'cost',
         'payment_id',
@@ -34,9 +35,9 @@ class Shipment extends Entity
         return $this->belongsTo(Payment::class);
     }
 
-    public function statuses(): object
+    public function trackingStatus(): object
     {
-        return $this->hasMany(ShipmentTracking::class);
+        return $this->belongsTo(TrackingStatus::class);
     }
 
     protected static function newFactory(): object

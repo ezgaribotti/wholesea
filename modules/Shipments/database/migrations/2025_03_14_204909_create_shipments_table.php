@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number');
+            $table->foreignId('tracking_status_id')->constrained();
             $table->foreignId('customer_address_id')->constrained();
             $table->decimal('cost');
             $table->foreignId('payment_id')->nullable()->constrained();

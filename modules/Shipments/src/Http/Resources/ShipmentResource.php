@@ -12,9 +12,9 @@ class ShipmentResource extends JsonResource
         return [
             'id' => $this->id,
             'tracking_number' => $this->tracking_number,
-            'payment_status' => $this->payment->status,
-            'shipment_statuses' => ShipmentTrackingResource::collection($this->statuses),
-            'items' => $this->items,
+            'payment' => new PaymentResource($this->payment),
+            'tracking_status' => new TrackingStatusResource($this->trackingStatus),
+            'items' => ShipmentItemResource::collection($this->items),
             'cost' => $this->cost,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
