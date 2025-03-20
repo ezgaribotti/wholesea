@@ -34,7 +34,7 @@ class ShipmentController extends Controller
 
     public function store(StoreShipmentRequest $request): object
     {
-        $trackingNumber = uniqid();
+        $trackingNumber = uniqid(create_prefix($request->path()));
 
         $cost = config('shipments.cost');
 

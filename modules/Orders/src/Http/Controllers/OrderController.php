@@ -32,7 +32,7 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingNumber = uniqid();
+        $trackingNumber = uniqid(create_prefix($request->path()));
         $totalAmount = 0;
 
         $order = $this->orderRepository->create([

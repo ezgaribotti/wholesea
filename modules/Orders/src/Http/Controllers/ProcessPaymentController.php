@@ -5,6 +5,7 @@ namespace Modules\Orders\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
+use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 
@@ -41,6 +42,10 @@ class ProcessPaymentController extends Controller
         }
 
         $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
+
+        if ($session->shipping_options) {
+            ShippingPaid::dispatch($order);
+        }
 
         return redirect()->toClient([
             'message' => 'Order successfully paid.'

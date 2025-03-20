@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Payments\src\Entities\Payment as Base;
+use Modules\Payments\src\Entities\Payment as RootEntity;
 
-class Payment extends Base
+class Payment extends RootEntity
 {
 }
