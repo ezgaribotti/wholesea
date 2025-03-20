@@ -42,10 +42,7 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $this->paymentRepository->update([
-            'status' => $session->payment_status,
-            'issued_at' => $request->issued_at,
-        ], $payment->id);
+        $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('pending');
         $this->shipmentRepository->update([
@@ -73,10 +70,7 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $this->paymentRepository->update([
-            'status' => 'canceled',
-            'issued_at' => $request->issued_at,
-        ], $payment->id);
+        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
         return redirect()->toClient([
             'message' => 'Shipment successfully canceled.'

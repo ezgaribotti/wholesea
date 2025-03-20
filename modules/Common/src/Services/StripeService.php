@@ -8,7 +8,7 @@ use Stripe\StripeClient;
 
 class StripeService
 {
-    public static function createSession(int $referenceId, string $email, array $items, array $routeNames): object
+    public static function createSession(int $referenceId, string $email, array $items, array $routeNames, float $shippingCost = 0): object
     {
         $config = to_object(config('common.stripe'));
 
@@ -33,11 +33,24 @@ class StripeService
             'client_reference_id' => $referenceId,
             'customer_email' => $email,
             'line_items' => $lineItems,
+            'shipping_options' => []
         ];
+
+        if ($shippingCost) {
+            $shippingRate = array_merge($config->shipping_rate, [
+                'fixed_amount' => [
+                    'amount' => $shippingCost,
+                    'currency' => $config->currency,
+                ],
+            ]);
+
+            $payload['shipping_options'][] = [
+                'shipping_rate_data' => $shippingRate
+            ];
+        }
 
         $parameters = [
             'reference_id' => $referenceId,
-            'issued_at' => now()->toDateTimeString(),
         ];
 
         foreach ($routeNames as $key => $name) {

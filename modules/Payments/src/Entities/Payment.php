@@ -13,7 +13,6 @@ class Payment extends Entity
     protected $fillable = [
         'external_reference',
         'status',
-        'issued_at',
     ];
 
     protected static function newFactory(): object

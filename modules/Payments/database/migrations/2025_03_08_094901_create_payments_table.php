@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->string('external_reference');
-            $table->timestamp('issued_at')->nullable();
             $table->timestamps();
         });
     }

@@ -12,7 +12,6 @@ class PaymentResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'issued_at' => $this->issued_at,
         ];
     }
 }

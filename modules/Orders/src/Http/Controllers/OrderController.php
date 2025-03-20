@@ -60,15 +60,16 @@ class OrderController extends Controller
         });
         $routeNames = config('orders.route_names');
 
+        $shippingCost = $request->pay_shipping ? 2000 : 0;
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames);
+        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames, $shippingCost);
 
         $payment = $this->paymentRepository->create([
             'external_reference' => $session->id,
         ]);
 
         $this->orderRepository->update([
-            'total_amount' => $totalAmount,
+            'total_amount' => $totalAmount + $shippingCost,
             'payment_id' => $payment->id,
         ], $order->id);
 

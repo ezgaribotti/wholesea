@@ -26,6 +26,7 @@ test('should store a new order', function () {
     $item = ['product_id' => $product->id, 'quantity' => 1];
 
     $response = $this->postJson(route('api.orders.store'), [
+        'pay_shipping' => false,
         'customer_address_id' => $customerAddress->id,
         'items' => [$item],
     ]);

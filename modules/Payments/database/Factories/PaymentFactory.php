@@ -11,6 +11,9 @@ class PaymentFactory extends Factory
 
     public function definition(): array
     {
-        return [];
+        return [
+            'status' => 'paid',
+            'external_reference' => fake()->uuid(),
+        ];
     }
 }
