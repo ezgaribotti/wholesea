@@ -13,6 +13,8 @@ class UpdateShipmentRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'tracking_status_id' => 'required|exists:tracking_statuses,id',
+        ];
     }
 }

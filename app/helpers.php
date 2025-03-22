@@ -23,3 +23,10 @@ if (! function_exists('wrap_like')) {
         return str_pad($value, strlen($value) + 2, chr(37), STR_PAD_BOTH);
     }
 }
+
+if (! function_exists('create_prefix')) {
+    function create_prefix(string $path): string
+    {
+        return substr($path, 4, ceil(strlen($path) / -3)) . chr(95);
+    }
+}

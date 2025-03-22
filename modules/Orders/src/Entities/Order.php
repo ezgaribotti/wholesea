@@ -5,6 +5,7 @@ namespace Modules\Orders\src\Entities;
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Common\src\Entities\CustomerAddress;
+use Modules\Common\src\Entities\Payment;
 use Modules\Common\src\Entities\Product;
 use Modules\Orders\database\Factories\OrderFactory;
 
@@ -14,11 +15,9 @@ class Order extends Entity
 
     protected $fillable = [
         'tracking_number',
-        'status',
         'customer_address_id',
         'total_amount',
-        'external_reference',
-        'issued_at',
+        'payment_id',
     ];
 
     public function customerAddress(): object
@@ -32,6 +31,11 @@ class Order extends Entity
             'fixed_price',
             'quantity'
         ]);
+    }
+
+    public function payment(): object
+    {
+        return $this->belongsTo(Payment::class);
     }
 
     protected static function newFactory(): object

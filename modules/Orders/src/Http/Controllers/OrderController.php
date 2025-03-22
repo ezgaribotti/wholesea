@@ -11,6 +11,7 @@ use Modules\Orders\src\Http\Requests\UpdateOrderRequest;
 use Modules\Orders\src\Http\Resources\OrderResource;
 use Modules\Orders\src\Http\Resources\OrderSummaryResource;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
+use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
 class OrderController extends Controller
@@ -18,6 +19,7 @@ class OrderController extends Controller
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductRepositoryInterface $productRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
     )
     {
     }
@@ -30,7 +32,7 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingNumber = uniqid();
+        $trackingNumber = uniqid(create_prefix($request->path()));
         $totalAmount = 0;
 
         $order = $this->orderRepository->create([
@@ -49,6 +51,10 @@ class OrderController extends Controller
                 'quantity' => $item->quantity
             ]);
 
+            $this->productRepository->update([
+                'stock' => $product->stock - $item->quantity
+            ], $product->id);
+
             $totalAmount += $product->unit_price * $item->quantity;
             $items[] = [
                 'name' => $product->name,
@@ -58,12 +64,17 @@ class OrderController extends Controller
         });
         $routeNames = config('orders.route_names');
 
+        $shippingCost = $request->pay_shipping ? 2000 : 0;
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames);
+        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames, $shippingCost);
+
+        $payment = $this->paymentRepository->create([
+            'external_reference' => $session->id,
+        ]);
 
         $this->orderRepository->update([
-            'total_amount' => $totalAmount,
-            'external_reference' => $session->id,
+            'total_amount' => $totalAmount + $shippingCost,
+            'payment_id' => $payment->id,
         ], $order->id);
 
         return response()->success(new UrlToPayResource($session->url));

@@ -8,16 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('trackings', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shipment_id')->constrained();
-            $table->foreignId('tracking_status_id')->constrained();
+            $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
+            $table->string('external_reference');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('trackings');
+        Schema::dropIfExists('payments');
     }
 };

@@ -5,12 +5,17 @@ namespace Modules\Orders\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Common\src\Services\StripeService;
+use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
+use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
+use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
 class ProcessPaymentController extends Controller
 {
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
+        protected PaymentRepositoryInterface $paymentRepository,
+        protected ProductRepositoryInterface $productRepository,
     )
     {
     }
@@ -24,12 +29,13 @@ class ProcessPaymentController extends Controller
         }
 
         $order = $this->orderRepository->find($request->reference_id);
-        if ($order->status != 'in_progress') {
+        $payment = $order->payment;
+        if ($payment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
-        $session = StripeService::retrieveSession($order->external_reference);
+        $session = StripeService::retrieveSession($payment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return redirect()->toClient([
@@ -37,10 +43,11 @@ class ProcessPaymentController extends Controller
             ]);
         }
 
-        $this->orderRepository->update([
-            'status' => $session->payment_status,
-            'issued_at' => $request->issued_at,
-        ], $order->id);
+        $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
+
+        if ($session->shipping_options) {
+            ShippingPaid::dispatch($order);
+        }
 
         return redirect()->toClient([
             'message' => 'Order successfully paid.'
@@ -56,16 +63,20 @@ class ProcessPaymentController extends Controller
         }
 
         $order = $this->orderRepository->find($request->reference_id);
-        if ($order->status != 'in_progress') {
+        $payment = $order->payment;
+        if ($payment->status != 'in_progress') {
             return redirect()->toClient([
                 'message' => 'Payment has already been processed.'
             ]);
         }
 
-        $this->orderRepository->update([
-            'issued_at' => $request->issued_at,
-            'status' => 'canceled',
-        ], $order->id);
+        $order->products->each(function ($product) {
+            $this->productRepository->update([
+                'stock' => $product->stock + $product->pivot->quantity
+            ], $product->id);
+        });
+
+        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
         return redirect()->toClient([
             'message' => 'Order successfully canceled.'

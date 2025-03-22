@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Customers\src\Entities\CustomerAddress as Base;
+use Modules\Customers\src\Entities\CustomerAddress as RootEntity;
 
-class CustomerAddress extends Base
+class CustomerAddress extends RootEntity
 {
 }
