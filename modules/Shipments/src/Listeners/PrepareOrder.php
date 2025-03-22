@@ -19,7 +19,7 @@ class PrepareOrder
     public function handle(object $event): void
     {
         $order = $event->order;
-        $trackingStatus = $this->trackingStatusRepository->findByName('under_review');
+        $trackingStatus = $this->trackingStatusRepository->findByName('pending');
 
         $shipment = $this->shipmentRepository->create([
             'customer_address_id' => $order->customer_address_id,
@@ -29,19 +29,14 @@ class PrepareOrder
             'cost' => 0,
         ]);
 
-        $descrption = null;
-        $order->products->each(function ($product) use (&$descrption) {
-            $descrption .= implode(chr(32), [$product->sku, $product->name, $product->pivot->quantity]) . PHP_EOL;
+        $shipmentId = $shipment->id;
+        $order->products->each(function ($product) use ($shipmentId) {
+            $this->shipmentItemRepository->create([
+                'shipment_id' => $shipmentId,
+                'name' => $product->sku,
+                'quantity' => $product->pivot->quantity,
+                'weight' => 0,
+            ]);
         });
-
-        $label = 'Batch of ordered products';
-
-        $this->shipmentItemRepository->create([
-            'shipment_id' => $shipment->id,
-            'name' => $label,
-            'quantity' => 1,
-            'weight' => 0,
-            'description' => $descrption,
-        ]);
     }
 }

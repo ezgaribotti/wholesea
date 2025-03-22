@@ -51,6 +51,10 @@ class OrderController extends Controller
                 'quantity' => $item->quantity
             ]);
 
+            $this->productRepository->update([
+                'stock' => $product->stock - $item->quantity
+            ], $product->id);
+
             $totalAmount += $product->unit_price * $item->quantity;
             $items[] = [
                 'name' => $product->name,

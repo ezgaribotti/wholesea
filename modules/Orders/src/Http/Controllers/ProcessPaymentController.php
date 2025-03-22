@@ -8,12 +8,14 @@ use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
+use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
 
 class ProcessPaymentController extends Controller
 {
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected PaymentRepositoryInterface $paymentRepository,
+        protected ProductRepositoryInterface $productRepository,
     )
     {
     }
@@ -67,6 +69,12 @@ class ProcessPaymentController extends Controller
                 'message' => 'Payment has already been processed.'
             ]);
         }
+
+        $order->products->each(function ($product) {
+            $this->productRepository->update([
+                'stock' => $product->stock + $product->pivot->quantity
+            ], $product->id);
+        });
 
         $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
