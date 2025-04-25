@@ -15,6 +15,7 @@ class SendResetLinkRequest extends FormRequest
     {
         return [
             'email' => 'required|email|exists:operators,email',
+            'return_url' => 'required|url',
         ];
     }
 }

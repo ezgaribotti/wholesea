@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Modules\Auth\src\Entities\Operator;
@@ -59,6 +60,7 @@ test('should send link to reset password successfully', function () {
 
     $response = $this->postJson(route('api.forgot-password'), [
         'email' => $operator->email,
+        'return_url' => URL::current(),
     ]);
     $response->assertOk();
 });

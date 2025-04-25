@@ -1,1 +1,1 @@
-<div>{{ $token }}</div>
+<div>{{ $link }}</div>

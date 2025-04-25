@@ -66,9 +66,14 @@ class AuthController extends Controller
         if ($operator->status == 'blocked') {
             abort(403, 'Your account has been blocked.');
         }
-        $token = Str::random(56);
+        $token = Str::random(63);
 
-        Mail::to($operator->email)->send(new ResetPassword($operator->email, $token));
+        $link = $request->return_url . chr(63) . http_build_query([
+            'email' => $operator->email,
+            'token' => $token,
+        ]);
+
+        Mail::to($operator->email)->send(new ResetPassword($link));
 
         $this->passwordResetTokenRepository->deleteByEmail($operator->email);
         $this->passwordResetTokenRepository->create([
