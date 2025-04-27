@@ -2,7 +2,7 @@
 
 namespace Modules\Shipments;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
@@ -15,8 +15,6 @@ use Modules\Shipments\src\Repositories\TrackingStatusRepository;
 
 class ShipmentServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->bind(ShipmentRepositoryInterface::class, ShipmentRepository::class);
@@ -27,6 +25,6 @@ class ShipmentServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }

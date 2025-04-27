@@ -34,7 +34,7 @@ abstract class Repository implements RepositoryInterface
                     }
                     $filter->strict
                         ? $query->where($filter->by, $filter->value)
-                        : $query->whereLike($filter->by, wrap_like($filter->value));
+                        : $query->whereLike($filter->by, str_pad($filter->value, strlen($filter->value) + 2, chr(37), STR_PAD_BOTH));
                 }
             })
             ->simplePaginate(15);

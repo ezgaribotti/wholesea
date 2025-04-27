@@ -2,7 +2,7 @@
 
 namespace Modules\Customers;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Customers\src\Interfaces\CountryRepositoryInterface;
 use Modules\Customers\src\Interfaces\CustomerAddressRepositoryInterface;
@@ -13,8 +13,6 @@ use Modules\Customers\src\Repositories\CustomerRepository;
 
 class CustomerServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->bind(CountryRepositoryInterface::class, CountryRepository::class);
@@ -24,6 +22,6 @@ class CustomerServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }

@@ -2,14 +2,12 @@
 
 namespace Modules\Common;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Common\src\Providers\EventServiceProvider;
 
 class CommonServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
@@ -17,6 +15,6 @@ class CommonServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }

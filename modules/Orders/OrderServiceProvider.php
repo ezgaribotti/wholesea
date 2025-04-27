@@ -2,7 +2,7 @@
 
 namespace Modules\Orders;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
@@ -13,8 +13,6 @@ use Modules\Orders\src\Repositories\ProductRepository;
 
 class OrderServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
@@ -24,6 +22,6 @@ class OrderServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }

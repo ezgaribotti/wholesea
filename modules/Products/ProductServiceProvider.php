@@ -2,7 +2,7 @@
 
 namespace Modules\Products;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Products\src\Interfaces\CategoryRepositoryInterface;
 use Modules\Products\src\Interfaces\ProductImageRepositoryInterface;
@@ -13,8 +13,6 @@ use Modules\Products\src\Repositories\ProductRepository;
 
 class ProductServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
@@ -24,6 +22,6 @@ class ProductServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }

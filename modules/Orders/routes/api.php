@@ -1,10 +1,11 @@
 <?php
 
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\Facades\Route;
 use Modules\Orders\src\Http\Controllers\OrderController;
 use Modules\Orders\src\Http\Controllers\ProcessPaymentController;
 
-api_routes(function () {
+Module::defineRoutes(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('orders', OrderController::class)->except(['destroy']);
     });

@@ -1,11 +1,12 @@
 <?php
 
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\src\Http\Controllers\AuthController;
 use Modules\Auth\src\Http\Controllers\OperatorController;
 use Modules\Auth\src\Http\Controllers\PermissionController;
 
-api_routes(function () {
+Module::defineRoutes(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('/login', 'login')->name('login');
         Route::post('/forgot-password', 'sendResetLink')->name('forgot-password');

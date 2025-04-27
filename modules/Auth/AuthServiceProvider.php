@@ -2,7 +2,7 @@
 
 namespace Modules\Auth;
 
-use App\Traits\SetupModule;
+use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
 use Modules\Auth\src\Interfaces\OperatorRepositoryInterface;
 use Modules\Auth\src\Interfaces\PasswordResetTokenRepositoryInterface;
@@ -13,8 +13,6 @@ use Modules\Auth\src\Repositories\PermissionRepository;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    use SetupModule;
-
     public function register(): void
     {
         $this->app->bind(OperatorRepositoryInterface::class, OperatorRepository::class);
@@ -24,6 +22,6 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->defaultSetup(__DIR__);
+        Module::setup($this);
     }
 }
