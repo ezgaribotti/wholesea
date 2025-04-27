@@ -3,6 +3,7 @@
 use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\src\Http\Controllers\AuthController;
+use Modules\Auth\src\Http\Controllers\LinkController;
 use Modules\Auth\src\Http\Controllers\OperatorController;
 use Modules\Auth\src\Http\Controllers\PermissionController;
 
@@ -17,6 +18,7 @@ Module::defineRoutes(function () {
         Route::apiResource('operators', OperatorController::class);
         Route::post('/sync-permissions', [OperatorController::class, 'syncPermissions'])->name('sync-permissions');
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+        Route::get('/allowed-links', [LinkController::class, 'index'])->name('links.index');
         Route::controller(AuthController::class)->group(function () {
             Route::post('/logout', 'logout')->name('logout');
             Route::get('/current-operator', 'currentOperator')->name('current-operator');

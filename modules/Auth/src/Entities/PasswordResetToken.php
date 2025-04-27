@@ -10,7 +10,7 @@ class PasswordResetToken extends Entity
 {
     use HasFactory;
 
-    const UPDATED_AT = null;
+    const null UPDATED_AT = null;
 
     protected $fillable = [
         'email',
