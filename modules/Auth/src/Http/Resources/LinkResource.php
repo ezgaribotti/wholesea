@@ -12,8 +12,7 @@ class LinkResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'route_name' => $this->route_name,
-            'icon' => $this->icon,
+            'to' => $this->to,
         ];
     }
 }

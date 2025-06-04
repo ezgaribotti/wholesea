@@ -13,8 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('active')->default(true);
             $table->string('slug');
-            $table->string('route_name');
-            $table->string('icon')->nullable();
+            $table->string('to');
             $table->timestamps();
         });
     }
