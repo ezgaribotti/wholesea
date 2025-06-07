@@ -58,7 +58,7 @@ test('should synchronize the permissions', function () {
     $operator = Operator::factory()->create();
     Sanctum::actingAs($operator);
 
-    $response = $this->postJson(route('api.sync-permissions'), [
+    $response = $this->postJson(route('api.operators.sync-permissions'), [
         'operator_id' => $operator->id,
         'permissions' => [Permission::factory()->create()->id]
     ]);

@@ -14,7 +14,7 @@ Module::defineRoutes(function () {
 });
 
 Route::prefix('shipment-payments')
-    ->name('shipment-payments.')
+    ->name('shipments.shipment-payments.')
     ->controller(ProcessPaymentController::class)->group(function () {
         Route::get('/success', 'success')->name('success');
         Route::get('/cancel', 'cancel')->name('cancel');

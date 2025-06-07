@@ -12,7 +12,7 @@ Module::defineRoutes(function () {
 });
 
 Route::prefix('order-payments')
-    ->name('order-payments.')
+    ->name('orders.order-payments.')
     ->controller(ProcessPaymentController::class)->group(function () {
         Route::get('/success', 'success')->name('success');
         Route::get('/cancel', 'cancel')->name('cancel');

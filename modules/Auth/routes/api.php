@@ -16,7 +16,7 @@ Module::defineRoutes(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('operators', OperatorController::class);
-        Route::post('/sync-permissions', [OperatorController::class, 'syncPermissions'])->name('sync-permissions');
+        Route::post('/sync-permissions', [OperatorController::class, 'syncPermissions'])->name('operators.sync-permissions');
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
         Route::get('/allowed-links', [LinkController::class, 'index'])->name('links.index');
         Route::controller(AuthController::class)->group(function () {

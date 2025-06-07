@@ -14,8 +14,8 @@ return [
     */
 
     'route_names' => [
-        'cancel_url' => 'order-payments.cancel',
-        'success_url' => 'order-payments.success',
+        'cancel_url' => 'orders.order-payments.cancel',
+        'success_url' => 'orders.order-payments.success',
     ],
 
 ];
