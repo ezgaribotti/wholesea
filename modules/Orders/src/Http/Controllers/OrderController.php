@@ -4,6 +4,7 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Http\Requests\StoreOrderRequest;
@@ -32,11 +33,11 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingNumber = uniqid(create_prefix($request->path()));
+        $trackingCode = Str::ulid();
         $totalAmount = 0;
 
         $order = $this->orderRepository->create([
-            'tracking_number' => $trackingNumber,
+            'tracking_code' => $trackingCode,
             'customer_address_id' => $request->customer_address_id,
             'total_amount' => $totalAmount,
         ]);
@@ -66,10 +67,11 @@ class OrderController extends Controller
 
         $shippingCost = $request->pay_shipping ? 2000 : 0;
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($order->id, $customer->email, $items, $routeNames, $shippingCost);
+        $session = StripeService::createSession($order->id, $trackingCode, $customer->email, $items, $routeNames, $shippingCost);
 
         $payment = $this->paymentRepository->create([
             'external_reference' => $session->id,
+            'tracking_code' => $trackingCode,
         ]);
 
         $this->orderRepository->update([

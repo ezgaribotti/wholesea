@@ -21,27 +21,14 @@ class ProcessPaymentController extends Controller
 
     public function success(Request $request): object
     {
-        if (!$request->hasValidSignature()) {
-            return redirect()->toClient([
-                'message' => 'Invalid signature.'
-            ]);
-        }
-
         $shipment = $this->shipmentRepository->find($request->reference_id);
         $payment = $shipment->payment;
-        if ($payment->status != 'in_progress') {
-            return redirect()->toClient([
-                'message' => 'Payment has already been processed.'
-            ]);
-        }
         $session = StripeService::retrieveSession($payment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
-            return redirect()->toClient([
-                'message' => 'Payment is not processable.'
-            ]);
-        }
+            return response('Unpaid or incomplete payment to process.');
 
+        }
         $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('pending');
@@ -49,31 +36,11 @@ class ProcessPaymentController extends Controller
             'tracking_status_id' => $trackingStatus->id,
         ], $shipment->id);
 
-        return redirect()->toClient([
-            'message' => 'Shipment successfully paid.'
-        ]);
+        return response('Shipment successfully paid.');
     }
 
     public function cancel(Request $request): object
     {
-        if (!$request->hasValidSignature()) {
-            return redirect()->toClient([
-                'message' => 'Invalid signature.'
-            ]);
-        }
-
-        $shipment = $this->shipmentRepository->find($request->reference_id);
-        $payment = $shipment->payment;
-        if ($payment->status != 'in_progress') {
-            return redirect()->toClient([
-                'message' => 'Payment has already been processed.'
-            ]);
-        }
-
-        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
-
-        return redirect()->toClient([
-            'message' => 'Shipment successfully canceled.'
-        ]);
+        return response('Shipment successfully canceled.');
     }
 }

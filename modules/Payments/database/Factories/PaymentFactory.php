@@ -3,6 +3,7 @@
 namespace Modules\Payments\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Modules\Payments\src\Entities\Payment;
 
 class PaymentFactory extends Factory
@@ -13,6 +14,7 @@ class PaymentFactory extends Factory
     {
         return [
             'status' => 'paid',
+            'tracking_code' => Str::ulid(),
             'external_reference' => fake()->uuid(),
         ];
     }

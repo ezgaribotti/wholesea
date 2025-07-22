@@ -22,53 +22,37 @@ class ProcessPaymentController extends Controller
 
     public function success(Request $request): object
     {
-        if (!$request->hasValidSignature()) {
-            return redirect()->toClient([
-                'message' => 'Invalid signature.'
-            ]);
-        }
-
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-        if ($payment->status != 'in_progress') {
-            return redirect()->toClient([
-                'message' => 'Payment has already been processed.'
-            ]);
+
+        if ($payment->status === 'canceled') {
+            return response('Payment previously canceled.');
         }
+
         $session = StripeService::retrieveSession($payment->external_reference);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
-            return redirect()->toClient([
-                'message' => 'Payment is not processable.'
-            ]);
-        }
+            return response('Unpaid or incomplete payment to process.');
 
+        }
         $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
 
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
         }
-
-        return redirect()->toClient([
-            'message' => 'Order successfully paid.'
-        ]);
+        return response('Order successfully paid.');
     }
 
     public function cancel(Request $request): object
     {
-        if (!$request->hasValidSignature()) {
-            return redirect()->toClient([
-                'message' => 'Invalid signature.'
-            ]);
-        }
-
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-        if ($payment->status != 'in_progress') {
-            return redirect()->toClient([
-                'message' => 'Payment has already been processed.'
-            ]);
+
+        if ($payment->status === 'canceled') {
+            return response('Payment previously canceled.');
         }
+
+        // Restore reserved stock
 
         $order->products->each(function ($product) {
             $this->productRepository->update([
@@ -78,8 +62,6 @@ class ProcessPaymentController extends Controller
 
         $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
-        return redirect()->toClient([
-            'message' => 'Order successfully canceled.'
-        ]);
+        return response('Order successfully canceled.');
     }
 }

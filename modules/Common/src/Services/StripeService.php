@@ -8,7 +8,7 @@ use Stripe\StripeClient;
 
 class StripeService
 {
-    public static function createSession(int $referenceId, string $email, array $items, array $routeNames, float $shippingCost = 0): object
+    public static function createSession(int $referenceId, string $trackingCode, string $email, array $items, array $routeNames, float $shippingCost = 0): object
     {
         $config = to_object(config('common.stripe'));
 
@@ -51,6 +51,7 @@ class StripeService
 
         $parameters = [
             'reference_id' => $referenceId,
+            'tracking_code' => $trackingCode,
         ];
 
         foreach ($routeNames as $key => $name) {

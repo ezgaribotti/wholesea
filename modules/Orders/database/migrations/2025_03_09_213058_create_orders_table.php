@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('tracking_number')->unique();
+            $table->string('tracking_code')->unique();
             $table->foreignId('customer_address_id')->constrained();
             $table->decimal('total_amount');
             $table->foreignId('payment_id')->nullable()->constrained();

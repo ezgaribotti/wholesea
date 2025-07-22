@@ -14,7 +14,7 @@ class Order extends Entity
     use HasFactory;
 
     protected $fillable = [
-        'tracking_number',
+        'tracking_code',
         'customer_address_id',
         'total_amount',
         'payment_id',
