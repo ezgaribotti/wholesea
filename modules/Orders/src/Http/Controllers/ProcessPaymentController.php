@@ -60,6 +60,7 @@ class ProcessPaymentController extends Controller
             ], $product->id);
         });
 
+        StripeService::expireSession($payment->external_reference);
         $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
         return response('Order successfully canceled.');
