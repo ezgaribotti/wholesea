@@ -4,11 +4,13 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
+use Modules\Orders\src\Mail\OrderPaid;
 
 class ProcessPaymentController extends Controller
 {
@@ -40,6 +42,11 @@ class ProcessPaymentController extends Controller
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
         }
+
+        $customer = $order->customerAddress->customer;
+        Mail::to($customer->email)
+            ->send(new OrderPaid($order, count($session->shipping_options)));
+
         return response('Order successfully paid.');
     }
 
