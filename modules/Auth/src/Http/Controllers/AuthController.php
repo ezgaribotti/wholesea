@@ -68,12 +68,13 @@ class AuthController extends Controller
         }
         $token = Str::random(63);
 
-        $link = $request->return_url . chr(63) . http_build_query([
+        $url = $request->return_url . chr(63) . http_build_query([
             'email' => $operator->email,
             'token' => $token,
         ]);
 
-        Mail::to($operator->email)->send(new ResetPassword($link));
+        Mail::to($operator->email)
+            ->send(new ResetPassword($operator->full_name, $url));
 
         $this->passwordResetTokenRepository->deleteByEmail($operator->email);
         $this->passwordResetTokenRepository->create([

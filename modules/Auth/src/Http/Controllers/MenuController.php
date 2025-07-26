@@ -3,13 +3,13 @@
 namespace Modules\Auth\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Modules\Auth\src\Http\Resources\LinkResource;
-use Modules\Auth\src\Interfaces\LinkRepositoryInterface;
+use Modules\Auth\src\Http\Resources\MenuLinkResource;
+use Modules\Auth\src\Interfaces\MenuLinkRepositoryInterface;
 
-class LinkController extends Controller
+class MenuController extends Controller
 {
     public function __construct(
-        protected LinkRepositoryInterface $linkRepository,
+        protected MenuLinkRepositoryInterface $linkRepository,
     )
     {
     }
@@ -21,6 +21,6 @@ class LinkController extends Controller
             $slugs[] = $permission->slug;
         });
         $links = $this->linkRepository->getBySlugs($slugs);
-        return response()->success(LinkResource::collection($links));
+        return response()->success(MenuLinkResource::collection($links));
     }
 }

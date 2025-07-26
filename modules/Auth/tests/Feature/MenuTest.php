@@ -7,9 +7,9 @@ use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class);
 
-test('should return a list of allowed links', function () {
+test('should return a list of menu links', function () {
     Sanctum::actingAs(Operator::factory()->create());
 
-    $response = $this->getJson(route('api.links.index'));
+    $response = $this->getJson(route('api.menu.index'));
     $response->assertOk();
 });

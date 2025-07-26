@@ -3,11 +3,11 @@
 namespace Modules\Auth\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Auth\src\Entities\Link;
+use Modules\Auth\src\Entities\MenuLink;
 
-class LinkFactory extends Factory
+class MenuLinkFactory extends Factory
 {
-    protected $model = Link::class;
+    protected $model = MenuLink::class;
 
     public function definition(): array
     {

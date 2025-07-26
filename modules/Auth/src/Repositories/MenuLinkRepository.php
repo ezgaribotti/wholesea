@@ -3,12 +3,12 @@
 namespace Modules\Auth\src\Repositories;
 
 use App\Repositories\Repository;
-use Modules\Auth\src\Entities\Link;
-use Modules\Auth\src\Interfaces\LinkRepositoryInterface;
+use Modules\Auth\src\Entities\MenuLink;
+use Modules\Auth\src\Interfaces\MenuLinkRepositoryInterface;
 
-class LinkRepository extends Repository implements LinkRepositoryInterface
+class MenuLinkRepository extends Repository implements MenuLinkRepositoryInterface
 {
-    public function __construct(Link $link)
+    public function __construct(MenuLink $link)
     {
         parent::__construct($link);
     }
