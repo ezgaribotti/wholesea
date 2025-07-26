@@ -4,6 +4,7 @@ namespace Modules\Shipments\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
@@ -15,6 +16,7 @@ use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
+use Modules\Shipments\src\Mail\ShipmentUpdated;
 
 class ShipmentController extends Controller
 {
@@ -95,6 +97,12 @@ class ShipmentController extends Controller
     public function update(UpdateShipmentRequest $request, string $id): object
     {
         $this->shipmentRepository->update($request->validated(), $id);
+        $shipment = $this->shipmentRepository->find($id);
+
+        $customer = $shipment->customerAddress->customer;
+        Mail::to($customer->email)
+            ->send(new ShipmentUpdated($shipment));
+
         return response()->justMessage('Shipment successfully updated.');
     }
 }

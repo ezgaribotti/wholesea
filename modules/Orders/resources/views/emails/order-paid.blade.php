@@ -1,7 +1,7 @@
 <html>
     <p>Order paid!</p>
-    <p>We’ve successfully received payment for your order ({{ $order_id }}).</p>
-    <p>Order summary:</p>
+    <p>We’ve successfully received payment for your order ({{ $order_id }}).<br>If you’d like to check the status of your shipment, you can do so using your tracking code. Alternatively, feel free to contact our support team and provide the tracking code for assistance.</p>
+
     <ul>
         <li>Tracking code: {{ $tracking_code }}</li>
         <li>Total paid: ${{ $total_paid }} ({{ $currency }})</li>
