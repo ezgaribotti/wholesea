@@ -13,7 +13,7 @@ class Shipment extends Entity
     use HasFactory;
 
     protected $fillable = [
-        'tracking_number',
+        'tracking_code',
         'tracking_status_id',
         'customer_address_id',
         'cost',

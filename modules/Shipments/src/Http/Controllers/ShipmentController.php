@@ -4,6 +4,7 @@ namespace Modules\Shipments\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
@@ -34,13 +35,12 @@ class ShipmentController extends Controller
 
     public function store(StoreShipmentRequest $request): object
     {
-        $trackingNumber = uniqid(create_prefix($request->path()));
-
         $cost = config('shipments.cost');
 
+        $trackingCode = Str::ulid();
         $trackingStatus = $this->trackingStatusRepository->findByName('unpaid');
         $shipment = $this->shipmentRepository->create([
-            'tracking_number' => $trackingNumber,
+            'tracking_code' => $trackingCode,
             'tracking_status_id' => $trackingStatus->id,
             'customer_address_id' => $request->customer_address_id,
             'cost' => $cost,
@@ -69,10 +69,11 @@ class ShipmentController extends Controller
         $routeNames = config('shipments.route_names');
 
         $customer = $shipment->customerAddress->customer;
-        $session = StripeService::createSession($shipment->id, $customer->email, $items, $routeNames);
+        $session = StripeService::createSession($shipment->id, $trackingCode, $customer->email, $items, $routeNames);
 
         $payment = $this->paymentRepository->create([
-            'external_reference' => $session->id
+            'external_reference' => $session->id,
+            'tracking_code' => $trackingCode,
         ]);
 
         $this->shipmentRepository->update([

@@ -23,7 +23,7 @@ class PrepareOrder
 
         $shipment = $this->shipmentRepository->create([
             'customer_address_id' => $order->customer_address_id,
-            'tracking_number' => $order->tracking_number,
+            'tracking_code' => $order->tracking_code,
             'tracking_status_id' => $trackingStatus->id,
             'payment_id' => $order->payment_id,
             'cost' => 0,

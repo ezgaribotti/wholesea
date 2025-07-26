@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            $table->string('tracking_number');
+            $table->string('tracking_code');
             $table->foreignId('tracking_status_id')->constrained();
             $table->foreignId('customer_address_id')->constrained();
             $table->decimal('cost');

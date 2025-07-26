@@ -11,7 +11,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tracking_number' => $this->tracking_number,
+            'tracking_code' => $this->tracking_code,
             'payment' => new PaymentResource($this->payment),
             'customer' => new CustomerResource($this->customerAddress->customer),
             'customer_address' => new CustomerAddressResource($this->customerAddress),

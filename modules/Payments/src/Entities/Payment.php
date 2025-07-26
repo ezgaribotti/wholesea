@@ -11,8 +11,9 @@ class Payment extends Entity
     use HasFactory;
 
     protected $fillable = [
-        'external_reference',
         'status',
+        'tracking_code',
+        'external_reference',
     ];
 
     protected static function newFactory(): object

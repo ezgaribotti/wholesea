@@ -2,6 +2,7 @@
 
 use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\Facades\Route;
+use Modules\Common\src\Http\Middleware\EnsurePaymentProcessable;
 use Modules\Shipments\src\Http\Controllers\ProcessPaymentController;
 use Modules\Shipments\src\Http\Controllers\ShipmentController;
 use Modules\Shipments\src\Http\Controllers\TrackingStatusController;
@@ -15,6 +16,7 @@ Module::defineRoutes(function () {
 
 Route::prefix('shipment-payments')
     ->name('shipments.shipment-payments.')
+    ->middleware([EnsurePaymentProcessable::class])
     ->controller(ProcessPaymentController::class)->group(function () {
         Route::get('/success', 'success')->name('success');
         Route::get('/cancel', 'cancel')->name('cancel');

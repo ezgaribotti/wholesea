@@ -5,13 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\PersonalAccessToken;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::get('/allowed-routes', function (Request $request) {
-
     $token = $request->bearerToken() ? PersonalAccessToken::findToken($request->bearerToken()) : null;
+
     $allowedRoutes = [];
     foreach (Route::getRoutes() as $route) {
         $splitName = explode(chr(46), $route->getName());

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
+            $table->string('tracking_code');
             $table->string('external_reference');
             $table->timestamps();
         });

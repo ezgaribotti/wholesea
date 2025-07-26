@@ -11,7 +11,7 @@ class ShipmentSummaryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tracking_number' => $this->tracking_number,
+            'tracking_code' => $this->tracking_code,
             'payment_status' => $this->payment?->status,
             'tracking_status_name' => $this->trackingStatus->name,
         ];
