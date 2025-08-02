@@ -13,7 +13,9 @@ return new class extends Migration
             $table->string('tracking_code');
             $table->foreignId('tracking_status_id')->constrained();
             $table->foreignId('customer_address_id')->constrained();
-            $table->decimal('cost');
+            $table->foreignId('cargo_manifest_id')->constrained();
+            $table->foreignId('insurance_policy_id')->constrained();
+            $table->decimal('shipping_cost');
             $table->foreignId('payment_id')->nullable()->constrained();
             $table->timestamps();
         });

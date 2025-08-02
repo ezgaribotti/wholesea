@@ -16,7 +16,9 @@ class Shipment extends Entity
         'tracking_code',
         'tracking_status_id',
         'customer_address_id',
-        'cost',
+        'cargo_manifest_id',
+        'insurance_policy_id',
+        'shipping_cost',
         'payment_id',
     ];
 
@@ -28,6 +30,16 @@ class Shipment extends Entity
     public function items(): object
     {
         return $this->hasMany(ShipmentItem::class);
+    }
+
+    public function cargoManifest(): object
+    {
+        return $this->belongsTo(CargoManifest::class);
+    }
+
+    public function insurancePolicy(): object
+    {
+        return $this->belongsTo(InsurancePolicy::class);
     }
 
     public function payment(): object
