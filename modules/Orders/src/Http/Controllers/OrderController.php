@@ -65,21 +65,22 @@ class OrderController extends Controller
         });
         $routeNames = config('orders.route_names');
 
-        $shippingCost = $request->pay_shipping ? 2000 : 0;
         $customer = $order->customerAddress->customer;
-        $session = StripeService::createSession($order->id, $trackingCode, $customer->email, $items, $routeNames, $shippingCost);
+        $session = StripeService::createSession($order->id, $trackingCode, $customer->email, $items, $routeNames);
 
         $payment = $this->paymentRepository->create([
             'external_reference' => $session->id,
             'tracking_code' => $trackingCode,
+            'url' => $session->url,
         ]);
 
         $this->orderRepository->update([
-            'total_amount' => $totalAmount + $shippingCost,
+            'total_amount' => $totalAmount,
             'payment_id' => $payment->id,
         ], $order->id);
 
-        return response()->success(new UrlToPayResource($session->url));
+        $order = $this->orderRepository->find($order->id);
+        return response()->success($request->pay_shipping ? new OrderResource($order) : new UrlToPayResource($session->url));
     }
 
     public function show(string $id): object

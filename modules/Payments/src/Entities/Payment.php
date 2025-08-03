@@ -14,6 +14,7 @@ class Payment extends Entity
         'status',
         'tracking_code',
         'external_reference',
+        'url',
     ];
 
     protected static function newFactory(): object

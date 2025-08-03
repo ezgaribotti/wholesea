@@ -8,7 +8,7 @@ use Stripe\StripeClient;
 
 class StripeService
 {
-    public static function createSession(int $referenceId, string $trackingCode, string $email, array $items, array $routeNames, float $shippingCost = 0): object
+    public static function createSession(int $referenceId, string $trackingCode, string $email, array $items, array $routeNames): object
     {
         $config = to_object(config('common.stripe'));
 
@@ -22,7 +22,7 @@ class StripeService
                     'product_data' => [
                         'name' => $item->name,
                     ],
-                    'unit_amount_decimal' => $item->unit_amount,
+                    'unit_amount_decimal' => round($item->unit_amount * 100),
                 ],
                 'quantity' => $item->quantity,
             ];
@@ -33,23 +33,8 @@ class StripeService
             'client_reference_id' => $referenceId,
             'customer_email' => $email,
             'line_items' => $lineItems,
-            'expires_at' => now()->addMinutes(30)->timestamp,
-            'shipping_options' => []
+            'expires_at' => now()->addMinutes(140)->timestamp,
         ];
-
-        if ($shippingCost) {
-            $shippingRate = array_merge($config->shipping_rate, [
-                'fixed_amount' => [
-                    'amount' => $shippingCost,
-                    'currency' => $config->currency,
-                ],
-            ]);
-
-            $payload['shipping_options'][] = [
-                'shipping_rate_data' => $shippingRate
-            ];
-        }
-
         $parameters = [
             'reference_id' => $referenceId,
             'tracking_code' => $trackingCode, // It is used to recover the payment

@@ -16,6 +16,7 @@ class PaymentFactory extends Factory
             'status' => 'paid',
             'tracking_code' => Str::ulid(),
             'external_reference' => fake()->uuid(),
+            'url' => fake()->url(),
         ];
     }
 }
