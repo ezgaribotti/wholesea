@@ -27,11 +27,6 @@ class Shipment extends Entity
         return $this->belongsTo(CustomerAddress::class);
     }
 
-    public function items(): object
-    {
-        return $this->hasMany(ShipmentItem::class);
-    }
-
     public function cargoManifest(): object
     {
         return $this->belongsTo(CargoManifest::class);

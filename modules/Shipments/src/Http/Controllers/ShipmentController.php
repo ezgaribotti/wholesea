@@ -10,7 +10,6 @@ use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
 use Modules\Shipments\src\Http\Resources\ShipmentSummaryResource;
 use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
-use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
 use Modules\Shipments\src\Mail\ShipmentSynced;
@@ -19,7 +18,6 @@ class ShipmentController extends Controller
 {
     public function __construct(
         protected ShipmentRepositoryInterface $shipmentRepository,
-        protected ShipmentItemRepositoryInterface $itemRepository,
         protected TrackingStatusRepositoryInterface $trackingStatusRepository,
         protected PaymentRepositoryInterface $paymentRepository,
     )

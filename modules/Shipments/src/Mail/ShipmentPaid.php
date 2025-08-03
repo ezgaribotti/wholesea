@@ -33,7 +33,7 @@ class ShipmentPaid extends Mailable
                 'shipment_id' => $this->shipment->id,
                 'tracking_code' => $this->shipment->tracking_code,
                 'currency' => strtoupper($currency),
-                'cost' => $this->shipment->cost,
+                'cost' => $this->shipment->shipping_cost,
                 'date' => $this->shipment->updated_at,
             ]
         );
