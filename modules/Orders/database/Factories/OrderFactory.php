@@ -18,7 +18,7 @@ class OrderFactory extends Factory
             'tracking_code' => Str::ulid(),
             'customer_address_id' => CustomerAddress::factory(),
             'payment_id' => Payment::factory(),
-            'total_amount' => 0,
+            'total_amount' => fake()->randomFloat(2, 1000, 10000),
         ];
     }
 }

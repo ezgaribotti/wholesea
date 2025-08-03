@@ -5,9 +5,6 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Modules\Common\src\Http\Resources\UrlToPayResource;
-use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
@@ -16,7 +13,7 @@ use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentItemRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
-use Modules\Shipments\src\Mail\ShipmentUpdated;
+use Modules\Shipments\src\Mail\ShipmentSynced;
 
 class ShipmentController extends Controller
 {
@@ -37,52 +34,7 @@ class ShipmentController extends Controller
 
     public function store(StoreShipmentRequest $request): object
     {
-        $cost = config('shipments.cost');
-
-        $trackingCode = Str::ulid();
-        $trackingStatus = $this->trackingStatusRepository->findByName('unpaid');
-        $shipment = $this->shipmentRepository->create([
-            'tracking_code' => $trackingCode,
-            'tracking_status_id' => $trackingStatus->id,
-            'customer_address_id' => $request->customer_address_id,
-            'cost' => $cost,
-        ]);
-
-        collect($request->items)->each(function ($item) use ($shipment) {
-            $item = to_object($item);
-
-            $this->itemRepository->create([
-                'shipment_id' => $shipment->id,
-                'name' => $item->name,
-                'weight' => $item->weight,
-                'quantity' => $item->quantity,
-                'description' => $item->description,
-            ]);
-
-        });
-        $label = 'Payment for shipping';
-
-        $items = [[
-            'name' => $label,
-            'unit_amount' => $cost,
-            'quantity' => 1,
-        ]];
-
-        $routeNames = config('shipments.route_names');
-
-        $customer = $shipment->customerAddress->customer;
-        $session = StripeService::createSession($shipment->id, $trackingCode, $customer->email, $items, $routeNames);
-
-        $payment = $this->paymentRepository->create([
-            'external_reference' => $session->id,
-            'tracking_code' => $trackingCode,
-        ]);
-
-        $this->shipmentRepository->update([
-            'payment_id' => $payment->id,
-        ], $shipment->id);
-
-        return response()->success(new UrlToPayResource($session->url));
+        return response()->justMessage('Shipment successfully created.');
     }
 
     public function show(string $id): object
@@ -100,8 +52,7 @@ class ShipmentController extends Controller
         $shipment = $this->shipmentRepository->find($id);
 
         $customer = $shipment->customerAddress->customer;
-        Mail::to($customer->email)
-            ->send(new ShipmentUpdated($shipment));
+        Mail::to($customer->email)->send(new ShipmentSynced($shipment));
 
         return response()->justMessage('Shipment successfully updated.');
     }

@@ -1,3 +1,5 @@
 [
-    "Modules\\Common\\database\\Seeders\\DatabaseSeeder"
+    "Modules\\Common\\database\\Seeders\\DatabaseSeeder",
+    "Modules\\Orders\\database\\Seeders\\DatabaseSeeder",
+    "Modules\\Shipments\\database\\Seeders\\DatabaseSeeder"
 ]

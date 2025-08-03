@@ -8,19 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('taxes', function (Blueprint $table) {
+        Schema::create('shipping_calculations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->boolean('active')->default(true);
-            $table->foreignId('country_id')->constrained();
-            $table->integer('tax_rate');
+            $table->string('tracking_code');
+            $table->decimal('cost');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('taxes');
+        Schema::dropIfExists('shipping_calculations');
     }
 };

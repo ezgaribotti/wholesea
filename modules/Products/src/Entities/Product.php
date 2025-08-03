@@ -17,6 +17,7 @@ class Product extends Entity
         'active',
         'stock',
         'unit_price',
+        'weight',
         'category_id',
         'supplier_id',
         'description',

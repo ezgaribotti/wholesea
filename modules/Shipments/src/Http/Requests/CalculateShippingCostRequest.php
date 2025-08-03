@@ -4,7 +4,7 @@ namespace Modules\Shipments\src\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreShipmentRequest extends FormRequest
+class CalculateShippingCostRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,6 +13,8 @@ class StoreShipmentRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'tracking_code' => 'required|exists:orders,tracking_code',
+        ];
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->integer('stock')->default(0);
             $table->decimal('unit_price');
+            $table->decimal('weight');
             $table->foreignId('category_id')->constrained();
             $table->foreignId('supplier_id')->constrained();
             $table->text('description')->nullable();

@@ -22,7 +22,7 @@ class ShipmentFactory extends Factory
             'customer_address_id' => CustomerAddress::factory(),
             'cargo_manifest_id' => CargoManifest::factory(),
             'insurance_policy_id' => InsurancePolicy::factory(),
-            'shipping_cost' => 0,
+            'shipping_cost' => fake()->randomFloat(2, 1000, 10000),
         ];
     }
 }

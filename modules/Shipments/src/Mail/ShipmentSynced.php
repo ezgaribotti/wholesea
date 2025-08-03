@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ShipmentUpdated extends Mailable
+class ShipmentSynced extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,14 +19,14 @@ class ShipmentUpdated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Shipment updated',
+            subject: 'Shipment synchronized',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'shipments::emails.shipment-updated',
+            view: 'shipments::emails.shipment-synced',
             with: [
                 'shipment_id' => $this->shipment->id,
                 'tracking_code' => $this->shipment->tracking_code,

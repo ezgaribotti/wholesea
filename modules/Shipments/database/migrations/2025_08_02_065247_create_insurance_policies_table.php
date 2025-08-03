@@ -15,6 +15,7 @@ return new class extends Migration
             $table->decimal('premium_factor')->default(1);
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

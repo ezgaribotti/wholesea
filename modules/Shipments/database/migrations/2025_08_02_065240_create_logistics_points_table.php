@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7);
             $table->decimal('service_fee')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

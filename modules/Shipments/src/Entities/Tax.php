@@ -4,12 +4,13 @@ namespace Modules\Shipments\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Common\src\Entities\Scopes\ActiveScope;
 use Modules\Shipments\database\Factories\TaxFactory;
 
 class Tax extends Entity
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',

@@ -22,6 +22,11 @@ class CargoManifest extends Entity
         'arrival_at',
     ];
 
+    public function transportType(): object
+    {
+        return $this->belongsTo(TransportType::class);
+    }
+
     protected static function newFactory(): object
     {
         return CargoManifestFactory::new();
