@@ -42,6 +42,15 @@ class ModuleServiceProvider extends ServiceProvider
         }
     }
 
+    public static function seedersToRun(): array
+    {
+        $path = base_path('module_seeders.json');
+        if (! file_exists($path)) {
+            return [];
+        }
+        return json_decode(file_get_contents($path), true);
+    }
+
     public static function defineRoutes(callable $callback): void
     {
         $config = to_object(config('modules'));
