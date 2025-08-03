@@ -15,8 +15,11 @@ class PaymentFactory extends Factory
         return [
             'status' => 'paid',
             'tracking_code' => Str::ulid(),
-            'external_reference' => fake()->uuid(),
+            'session_id' => fake()->uuid(),
             'url' => fake()->url(),
+            'hosted_invoice_url' => fake()->url(),
+            'total_amount' => fake()->randomFloat(2, 1000, 10000),
+            'expires_at' => fake()->dateTime(),
         ];
     }
 }

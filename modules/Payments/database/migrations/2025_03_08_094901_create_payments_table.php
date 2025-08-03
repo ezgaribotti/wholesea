@@ -12,7 +12,12 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->string('tracking_code');
-            $table->string('external_session_id')->unique();
+            $table->string('session_id')->unique();
+            $table->text('url');
+            $table->text('hosted_invoice_url')->nullable();
+            $table->decimal('total_amount');
+            $table->timestamp('expires_at');
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }

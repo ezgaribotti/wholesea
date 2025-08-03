@@ -31,13 +31,14 @@ class ProcessPaymentController extends Controller
             return response('Payment previously canceled.');
         }
 
-        $session = StripeService::retrieveSession($payment->external_reference);
+        $session = StripeService::retrieveSession($payment->session_id);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return response('Unpaid or incomplete payment to process.');
 
         }
-        $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
+        $this->paymentRepository->update([
+            'status' => $session->payment_status, 'paid_at' => now()], $payment->id);
 
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
@@ -67,7 +68,7 @@ class ProcessPaymentController extends Controller
             ], $product->id);
         });
 
-        StripeService::expireSession($payment->external_reference);
+        StripeService::expireSession($payment->session_id);
         $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
 
         return response('Order successfully canceled.');

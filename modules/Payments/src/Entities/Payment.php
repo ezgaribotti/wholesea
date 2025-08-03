@@ -13,8 +13,12 @@ class Payment extends Entity
     protected $fillable = [
         'status',
         'tracking_code',
-        'external_reference',
+        'session_id',
         'url',
+        'hosted_invoice_url',
+        'total_amount',
+        'expires_at',
+        'paid_at',
     ];
 
     protected static function newFactory(): object
