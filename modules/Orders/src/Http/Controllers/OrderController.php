@@ -69,7 +69,7 @@ class OrderController extends Controller
         $session = StripeService::createSession($order->id, $trackingCode, $customer->email, $items, $routeNames);
 
         $payment = $this->paymentRepository->create([
-            'external_reference' => $session->id,
+            'external_session_id' => $session->id,
             'tracking_code' => $trackingCode,
             'url' => $session->url,
         ]);

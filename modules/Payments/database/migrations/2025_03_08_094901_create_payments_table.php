@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['in_progress', 'paid', 'canceled'])->default('in_progress');
             $table->string('tracking_code');
-            $table->string('external_reference');
+            $table->string('external_session_id')->unique();
             $table->timestamps();
         });
     }
