@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->foreignId('country_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
