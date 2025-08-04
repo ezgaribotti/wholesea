@@ -14,7 +14,6 @@ class InsurancePolicyFactory extends Factory
         return [
             'name' => fake()->name(),
             'coverage_rate' => fake()->numberBetween(5, 95),
-            'premium_factor' => fake()->randomFloat(2, 5, 10),
             'description' => fake()->text(),
         ];
     }

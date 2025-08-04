@@ -13,7 +13,6 @@ class InsurancePolicyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'coverage_rate' => $this->coverage_rate,
-            'premium_factor' => $this->premium_factor,
             'description' => $this->description,
         ];
     }

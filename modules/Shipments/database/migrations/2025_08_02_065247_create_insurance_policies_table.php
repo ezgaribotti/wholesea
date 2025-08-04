@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('coverage_rate');
-            $table->decimal('premium_factor')->default(1);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

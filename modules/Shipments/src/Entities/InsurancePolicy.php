@@ -14,7 +14,6 @@ class InsurancePolicy extends Entity
     protected $fillable = [
         'name',
         'coverage_rate',
-        'premium_factor',
         'description',
     ];
 
