@@ -15,7 +15,6 @@ class CargoManifestResource extends JsonResource
             'transport_type' => new TransportTypeResource($this->transportType),
             'status' => $this->status,
             'coordinates' => json_decode($this->coordinates, true),
-            'current_weight' => $this->current_weight,
             'max_weight' => $this->max_weight,
             'extra_handling_fee' => $this->extra_handling_fee,
             'final_cost' => $this->final_cost,

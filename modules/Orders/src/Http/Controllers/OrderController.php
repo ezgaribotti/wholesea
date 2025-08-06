@@ -34,35 +34,41 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): object
     {
-        $trackingCode = Str::ulid();
+        $countryId = null; // Valid if they are from the same country
+
         $totalAmount = 0;
+        $items = [];
+        collect($request->items)->each(function ($item) use (&$countryId, &$totalAmount, &$items) {
+            $item = to_object($item);
+            $product = $this->productRepository->find($item->product_id);
+
+            if ($countryId && $countryId !== $product->supplier->country_id) {
+                abort(422, 'Only items from the same country can be ordered.');
+            }
+            $countryId = $product->supplier->country_id;
+            $totalAmount += $product->unit_price * $item->quantity;
+
+            $items[] = to_object(['product' => $product, 'quantity' => $item->quantity]);
+        });
+        $trackingCode = Str::ulid();
 
         $order = $this->orderRepository->create([
             'tracking_code' => $trackingCode,
+            'country_id' => $countryId,
             'customer_address_id' => $request->customer_address_id,
             'total_amount' => $totalAmount,
         ]);
 
-        $items = [];
-        collect($request->items)->each(function ($item) use ($order, &$items, &$totalAmount) {
-            $item = to_object($item);
-            $product = $this->productRepository->find($item->product_id);
+        collect($items)->each(function ($item) use ($order) {
+            $product = $item->product;
 
             $order->products()->attach($product->id, [
                 'fixed_price' => $product->unit_price,
                 'quantity' => $item->quantity
             ]);
 
-            $this->productRepository->update([
-                'stock' => $product->stock - $item->quantity
-            ], $product->id);
-
-            $totalAmount += $product->unit_price * $item->quantity;
-            $items[] = [
-                'name' => $product->name,
-                'unit_amount' => $product->unit_price,
-                'quantity' => $item->quantity,
-            ];
+            $stock = $product->stock - $item->quantity;
+            $this->productRepository->update(['stock' => $stock], $product->id);
         });
         $routeNames = config('orders.route_names');
 

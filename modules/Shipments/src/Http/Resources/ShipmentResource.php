@@ -11,8 +11,6 @@ class ShipmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tracking_code' => $this->tracking_code,
-            'payment' => new PaymentResource($this->payment),
             'tracking_status' => new TrackingStatusResource($this->trackingStatus),
             'shipping_cost' => $this->shipping_cost,
             'created_at' => $this->created_at,

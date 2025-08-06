@@ -4,6 +4,7 @@ namespace Modules\Orders\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Common\src\Entities\Country;
 use Modules\Common\src\Entities\CustomerAddress;
 use Modules\Common\src\Entities\Payment;
 use Modules\Orders\src\Entities\Order;
@@ -16,6 +17,7 @@ class OrderFactory extends Factory
     {
         return [
             'tracking_code' => Str::ulid(),
+            'country_id' => Country::factory(),
             'customer_address_id' => CustomerAddress::factory(),
             'payment_id' => Payment::factory(),
             'total_amount' => fake()->randomFloat(2, 1000, 10000),

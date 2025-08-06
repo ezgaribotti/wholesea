@@ -10,13 +10,12 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            $table->string('tracking_code');
+            $table->foreignId('order_id')->constrained();
             $table->foreignId('tracking_status_id')->constrained();
-            $table->foreignId('customer_address_id')->constrained();
             $table->foreignId('cargo_manifest_id')->constrained();
             $table->foreignId('insurance_policy_id')->constrained();
+            $table->decimal('weight');
             $table->decimal('shipping_cost');
-            $table->foreignId('payment_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

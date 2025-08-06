@@ -3,8 +3,7 @@
 namespace Modules\Shipments\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use Modules\Common\src\Entities\CustomerAddress;
+use Modules\Common\src\Entities\Order;
 use Modules\Shipments\src\Entities\CargoManifest;
 use Modules\Shipments\src\Entities\InsurancePolicy;
 use Modules\Shipments\src\Entities\Shipment;
@@ -17,11 +16,11 @@ class ShipmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'tracking_code' => Str::ulid(),
+            'order_id' => Order::factory(),
             'tracking_status_id' => TrackingStatus::factory(),
-            'customer_address_id' => CustomerAddress::factory(),
             'cargo_manifest_id' => CargoManifest::factory(),
             'insurance_policy_id' => InsurancePolicy::factory(),
+            'weight' => fake()->randomFloat(2, 10, 100),
             'shipping_cost' => fake()->randomFloat(2, 1000, 10000),
         ];
     }

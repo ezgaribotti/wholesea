@@ -16,7 +16,6 @@ class CargoManifestFactory extends Factory
             'transport_code' => fake()->uuid(),
             'transport_type_id' => TransportType::factory(),
             'coordinates' => json_encode([]),
-            'current_weight' => fake()->randomFloat(2, 100, 1000),
             'max_weight' => fake()->randomFloat(2, 1000, 10000),
             'extra_handling_fee' => 100,
             'final_cost' => fake()->randomFloat(2, 1000, 10000),

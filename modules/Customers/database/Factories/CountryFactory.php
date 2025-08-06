@@ -14,6 +14,7 @@ class CountryFactory extends Factory
         return [
             'name' => fake()->country(),
             'iso_code' => fake()->countryCode(),
+            'cost_per_weight' => fake()->randomDecimal(),
         ];
     }
 }

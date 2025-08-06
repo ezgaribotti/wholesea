@@ -14,7 +14,6 @@ return new class extends Migration
             $table->foreignId('transport_type_id')->constrained();
             $table->enum('status', ['draft', 'scheduled', 'in_transit', 'delivered', 'canceled'])->default('draft');
             $table->json('coordinates');
-            $table->decimal('current_weight')->default(0);
             $table->decimal('max_weight');
             $table->decimal('extra_handling_fee')->default(0);
             $table->decimal('final_cost');

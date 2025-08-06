@@ -12,4 +12,9 @@ class ShipmentRepository extends Repository implements ShipmentRepositoryInterfa
     {
         parent::__construct($shipment);
     }
+
+    public function existsByOrderId(int $orderId): bool
+    {
+        return $this->entity->whereOrderId($orderId)->exists();
+    }
 }

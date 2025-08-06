@@ -15,7 +15,6 @@ class CargoManifest extends Entity
         'transport_type_id',
         'status',
         'coordinates',
-        'current_weight',
         'max_weight',
         'extra_handling_fee',
         'final_cost',

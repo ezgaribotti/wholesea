@@ -4,6 +4,7 @@ namespace Modules\Orders\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Common\src\Entities\Country;
 use Modules\Common\src\Entities\CustomerAddress;
 use Modules\Common\src\Entities\Payment;
 use Modules\Common\src\Entities\Product;
@@ -15,10 +16,16 @@ class Order extends Entity
 
     protected $fillable = [
         'tracking_code',
+        'country_id',
         'customer_address_id',
         'total_amount',
         'payment_id',
     ];
+
+    public function country(): object
+    {
+        return $this->belongsTo(Country::class);
+    }
 
     public function customerAddress(): object
     {

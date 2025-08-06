@@ -14,15 +14,14 @@ class StripeService
 
         $lineItems = [];
         collect($items)->each(function ($item) use (&$lineItems, $config) {
-            $item = to_object($item);
-
+            $product = $item->product;
             $lineItems[] = [
                 'price_data' => [
                     'currency' => $config->currency,
                     'product_data' => [
-                        'name' => $item->name,
+                        'name' => $product->name,
                     ],
-                    'unit_amount_decimal' => round($item->unit_amount * 100),
+                    'unit_amount_decimal' => round($product->unit_amount * 100),
                 ],
                 'quantity' => $item->quantity,
             ];
