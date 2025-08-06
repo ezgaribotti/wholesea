@@ -15,6 +15,7 @@ class CountryFactory extends Factory
             'name' => fake()->country(),
             'iso_code' => fake()->countryCode(),
             'cost_per_weight' => fake()->randomDecimal(),
+            'fuel_price' => fake()->randomDecimal(),
         ];
     }
 }

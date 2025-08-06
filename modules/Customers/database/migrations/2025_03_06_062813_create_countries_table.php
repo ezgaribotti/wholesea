@@ -14,6 +14,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->string('iso_code');
             $table->decimal('cost_per_weight');
+            $table->decimal('fuel_price')->comment('Fuel price per liter for any transport type');
             $table->timestamps();
         });
     }

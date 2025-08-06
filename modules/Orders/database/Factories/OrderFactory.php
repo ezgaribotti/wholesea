@@ -20,7 +20,8 @@ class OrderFactory extends Factory
             'country_id' => Country::factory(),
             'customer_address_id' => CustomerAddress::factory(),
             'payment_id' => Payment::factory(),
-            'total_amount' => fake()->randomFloat(2, 1000, 10000),
+            'weight' => fake()->randomDecimal(),
+            'total_amount' => fake()->randomDecimal(),
         ];
     }
 }

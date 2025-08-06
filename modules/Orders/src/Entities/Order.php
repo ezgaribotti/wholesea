@@ -19,6 +19,7 @@ class Order extends Entity
         'country_id',
         'customer_address_id',
         'total_amount',
+        'weight',
         'payment_id',
     ];
 

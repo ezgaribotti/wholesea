@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Customers\src\Entities\Country as RootEntity;
+use Modules\Customers\src\Entities\Country as Entity;
 
-class Country extends RootEntity
+class Country extends Entity
 {
 }

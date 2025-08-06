@@ -37,8 +37,9 @@ class OrderController extends Controller
         $countryId = null; // Valid if they are from the same country
 
         $totalAmount = 0;
+        $weight = 0;
         $items = [];
-        collect($request->items)->each(function ($item) use (&$countryId, &$totalAmount, &$items) {
+        collect($request->items)->each(function ($item) use (&$countryId, &$totalAmount, &$weight, &$items) {
             $item = to_object($item);
             $product = $this->productRepository->find($item->product_id);
 
@@ -47,6 +48,7 @@ class OrderController extends Controller
             }
             $countryId = $product->supplier->country_id;
             $totalAmount += $product->unit_price * $item->quantity;
+            $weight += $product->weight * $item->quantity;
 
             $items[] = to_object(['product' => $product, 'quantity' => $item->quantity]);
         });
@@ -56,6 +58,7 @@ class OrderController extends Controller
             'tracking_code' => $trackingCode,
             'country_id' => $countryId,
             'customer_address_id' => $request->customer_address_id,
+            'weight' => $weight,
             'total_amount' => $totalAmount,
         ]);
 

@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Orders\src\Entities\Order as RootEntity;
+use Modules\Orders\src\Entities\Order as Entity;
 
-class Order extends RootEntity
+class Order extends Entity
 {
 }
