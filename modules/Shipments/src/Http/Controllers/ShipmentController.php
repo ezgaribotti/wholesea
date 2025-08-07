@@ -5,12 +5,10 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
 use Modules\Shipments\src\Http\Resources\ShipmentSummaryResource;
-use Modules\Shipments\src\Interfaces\CargoManifestRepositoryInterface;
 use Modules\Shipments\src\Interfaces\OrderRepositoryInterface;
 use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
@@ -25,7 +23,6 @@ class ShipmentController extends Controller
         protected TrackingStatusRepositoryInterface $trackingStatusRepository,
         protected PaymentRepositoryInterface $paymentRepository,
         protected OrderRepositoryInterface $orderRepository,
-        protected CargoManifestRepositoryInterface $cargoManifestRepository,
         protected TaxRepositoryInterface $taxRepository,
     )
     {

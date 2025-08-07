@@ -12,7 +12,6 @@ class LogisticsPointResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'transport_type' => new TransportTypeResource($this->transportType),
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'service_fee' => $this->service_fee,

@@ -14,20 +14,18 @@ class Shipment extends Entity
     protected $fillable = [
         'order_id',
         'tracking_status_id',
-        'cargo_manifest_id',
         'insurance_policy_id',
         'weight',
-        'shipping_cost',
+        'final_cost',
+        'coordinates',
+        'extra_handling_fee',
+        'departure_at',
+        'arrival_at',
     ];
 
     public function order(): object
     {
         return $this->belongsTo(Order::class);
-    }
-
-    public function cargoManifest(): object
-    {
-        return $this->belongsTo(CargoManifest::class);
     }
 
     public function insurancePolicy(): object

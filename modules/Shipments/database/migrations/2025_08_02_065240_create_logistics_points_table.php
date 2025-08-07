@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('active')->default(true);
             $table->foreignId('country_id')->constrained();
-            $table->foreignId('transport_type_id')->constrained();
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
             $table->decimal('service_fee')->default(0);

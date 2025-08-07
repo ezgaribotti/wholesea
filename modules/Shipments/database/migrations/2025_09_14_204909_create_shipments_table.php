@@ -12,10 +12,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained();
             $table->foreignId('tracking_status_id')->constrained();
-            $table->foreignId('cargo_manifest_id')->constrained();
             $table->foreignId('insurance_policy_id')->constrained();
             $table->decimal('weight');
-            $table->decimal('shipping_cost');
+            $table->decimal('final_cost');
+            $table->json('coordinates');
+            $table->decimal('extra_handling_fee')->default(0);
+            $table->timestamp('departure_at')->nullable();
+            $table->timestamp('arrival_at')->nullable();
             $table->timestamps();
         });
     }

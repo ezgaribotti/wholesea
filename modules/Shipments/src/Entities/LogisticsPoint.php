@@ -16,16 +16,10 @@ class LogisticsPoint extends Entity
         'name',
         'active',
         'country_id',
-        'transport_type_id',
         'latitude',
         'longitude',
         'service_fee',
     ];
-
-    public function transportType(): object
-    {
-        return $this->belongsTo(TransportType::class);
-    }
 
     protected static function booted(): void
     {

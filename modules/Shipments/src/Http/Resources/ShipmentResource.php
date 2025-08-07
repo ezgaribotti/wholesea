@@ -12,7 +12,7 @@ class ShipmentResource extends JsonResource
         return [
             'id' => $this->id,
             'tracking_status' => new TrackingStatusResource($this->trackingStatus),
-            'shipping_cost' => $this->shipping_cost,
+            'final_cost' => $this->final_cost,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
