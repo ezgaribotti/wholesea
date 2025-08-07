@@ -25,7 +25,7 @@ class ModuleServiceProvider extends ServiceProvider
 
         $faker = fake();
         $faker->addProvider(new class($faker) extends Faker {
-            public function randomDecimal(int $minimum = 10000): float {
+            public function randomDecimal(int $minimum = 100): float {
                 return $this->generator->randomFloat(2, $minimum, $minimum * 2);
             }
         });

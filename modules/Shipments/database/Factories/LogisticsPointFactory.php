@@ -14,10 +14,10 @@ class LogisticsPointFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'country_id' => Country::factory(),
+            'country_id' => Country::first(),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
-            'service_fee' => fake()->randomFloat(2, 1000, 10000),
+            'service_fee' => fake()->randomDecimal(),
         ];
     }
 }

@@ -13,7 +13,7 @@ class TrackingStatusFactory extends Factory
     {
         return [
             'name' => fake()->unique()->name,
-            'priority' => 0
+            'priority' => fake()->randomDigit()
         ];
     }
 }

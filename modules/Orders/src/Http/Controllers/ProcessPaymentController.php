@@ -30,7 +30,6 @@ class ProcessPaymentController extends Controller
         if ($payment->status === 'canceled') {
             return response('Payment previously canceled.');
         }
-
         $session = StripeService::retrieveSession($payment->session_id);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
@@ -43,10 +42,8 @@ class ProcessPaymentController extends Controller
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
         }
-
         $customer = $order->customerAddress->customer;
-        Mail::to($customer->email)
-            ->send(new OrderPaid($order, count($session->shipping_options)));
+        Mail::to($customer->email)->send(new OrderPaid($order, count($session->shipping_options)));
 
         return response('Order successfully paid.');
     }

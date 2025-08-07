@@ -15,7 +15,7 @@ class SupplierFactory extends Factory
         return [
             'name' => fake()->company(),
             'email' => fake()->companyEmail(),
-            'country_id' => Country::factory(),
+            'country_id' => Country::first(),
         ];
     }
 }

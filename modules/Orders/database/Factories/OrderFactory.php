@@ -17,7 +17,7 @@ class OrderFactory extends Factory
     {
         return [
             'tracking_code' => Str::ulid(),
-            'country_id' => Country::factory(),
+            'country_id' => Country::first(),
             'customer_address_id' => CustomerAddress::factory(),
             'payment_id' => Payment::factory(),
             'weight' => fake()->randomDecimal(),

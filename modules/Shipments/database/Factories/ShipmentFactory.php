@@ -16,7 +16,7 @@ class ShipmentFactory extends Factory
     {
         return [
             'order_id' => Order::factory(),
-            'tracking_status_id' => TrackingStatus::factory(),
+            'tracking_status_id' => TrackingStatus::first(),
             'insurance_policy_id' => InsurancePolicy::factory(),
             'weight' => fake()->randomDecimal(),
             'final_cost' => fake()->randomDecimal(),

@@ -13,12 +13,12 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'status' => 'paid',
+            'status' => fake()->randomElement(['in_progress', 'paid']),
             'tracking_code' => Str::ulid(),
             'session_id' => fake()->uuid(),
             'url' => fake()->url(),
             'hosted_invoice_url' => fake()->url(),
-            'total_amount' => fake()->randomFloat(2, 1000, 10000),
+            'total_amount' => fake()->randomDecimal(),
             'expires_at' => fake()->dateTime(),
         ];
     }

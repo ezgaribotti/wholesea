@@ -29,7 +29,7 @@ class ShipmentSynced extends Mailable
             view: 'shipments::emails.shipment-synced',
             with: [
                 'shipment_id' => $this->shipment->id,
-                'tracking_code' => $this->shipment->tracking_code,
+                'tracking_code' => $this->shipment->order->tracking_code,
                 'status' => strtoupper($this->shipment->trackingStatus->name),
                 'date' => $this->shipment->updated_at,
             ]

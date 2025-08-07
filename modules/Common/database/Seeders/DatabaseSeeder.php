@@ -5,9 +5,10 @@ namespace Modules\Common\database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Modules\Common\src\Entities\Country;
-use Modules\Common\src\Entities\CustomerAddress;
 use Modules\Common\src\Entities\Operator;
+use Modules\Common\src\Entities\Order;
 use Modules\Common\src\Entities\Product;
+use Modules\Common\src\Entities\Supplier;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +23,10 @@ class DatabaseSeeder extends Seeder
             ]);
         });
         Country::factory()->create();
-        CustomerAddress::factory()->create();
-        Product::factory()->create();
+        Supplier::factory()->create();
+        (Order::factory()->create())->products()->attach(Product::factory()->create()->id, [
+            'quantity' => fake()->randomDigit(),
+            'fixed_price' => fake()->randomDecimal(),
+        ]);
     }
 }

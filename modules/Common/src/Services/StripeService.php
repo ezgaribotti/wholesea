@@ -21,7 +21,7 @@ class StripeService
                     'product_data' => [
                         'name' => $product->name,
                     ],
-                    'unit_amount_decimal' => round($product->unit_amount * 100),
+                    'unit_amount_decimal' => round($product->unit_price * 100),
                 ],
                 'quantity' => $item->quantity,
             ];
@@ -82,5 +82,32 @@ class StripeService
 
             abort(500, 'Error trying to expire Stripe checkout session.');
         }
+    }
+
+    public static function addShippingOptions(string $id, float $cost): object
+    {
+        $config = to_object(config('common.stripe'));
+
+        $payload = [
+            'shipping_options' => [[
+                'shipping_rate_data' => array_merge($config->shipping_rate, [
+                    'fixed_amount' => [
+                        'currency' => $config->currency,
+                        'amount' => round($cost * 100)
+                    ]
+                ]),
+            ]]
+        ];
+
+        $client = new StripeClient($config->secret_key);
+        try {
+            $session = $client->checkout->sessions->update($id, $payload);
+
+        } catch (ApiErrorException $exception) {
+            logger()->error($exception->getMessage(), $exception->getJsonBody());
+
+            abort(500, 'Error trying to update Stripe checkout session.');
+        }
+        return $session;
     }
 }

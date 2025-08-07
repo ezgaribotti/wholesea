@@ -5,6 +5,8 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Modules\Common\src\Http\Resources\UrlToPayResource;
+use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
@@ -36,29 +38,41 @@ class ShipmentController extends Controller
 
     public function store(StoreShipmentRequest $request): object
     {
-        if ($this->shipmentRepository->existsByOrderId($request->order_id)) {
+        $shipment = $this->shipmentRepository->findByOrderId($request->order_id);
+        if ($shipment && $payment = $shipment->order->payment) {
+            if ($payment->status == 'in_progress') {
+
+                return response()->success(new UrlToPayResource($payment->url));
+            }
 
             // To create another shipment you have to step on the existing one
 
-            abort(400, 'There is already a shipment for that order.');
+            abort(422, 'The shipment has no payment in progress.');
         }
         $order = $this->orderRepository->find($request->order_id);
-
-        // Sum of the weight of all items
 
         $weight = $order->products->sum('weight');
         if ($weight <= 0) {
             abort(422, 'The weight of the items must be greater than 0.');
         }
-        $shippingCost = $weight * $order->country->cost_per_weight;
+        $cost = $weight * $order->country->cost_per_weight;
+
+        // Update payment to add the shipping option
+
+        $payment = $order->payment;
+        $session = StripeService::addShippingOptions($payment->session_id, $cost);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('unpaid');
         $this->shipmentRepository->create(array_merge($request->validated(), [
-            'shipping_cost' => $shippingCost,
+            'final_cost' => $cost,
+            'coordinates' => json_encode([]),
             'tracking_status_id' => $trackingStatus->id,
             'weight' => $weight,
         ]));
-        return response()->justMessage('Shipment successfully created.');
+
+        $this->paymentRepository->update(['total_amount' => $payment->total_amount + $cost], $payment->id);
+
+        return response()->success(new UrlToPayResource($session->url));
     }
 
     public function show(string $id): object
@@ -75,7 +89,7 @@ class ShipmentController extends Controller
         $this->shipmentRepository->update($request->validated(), $id);
         $shipment = $this->shipmentRepository->find($id);
 
-        $customer = $shipment->customerAddress->customer;
+        $customer = $shipment->order->customerAddress->customer;
         Mail::to($customer->email)->send(new ShipmentSynced($shipment));
 
         return response()->justMessage('Shipment successfully updated.');

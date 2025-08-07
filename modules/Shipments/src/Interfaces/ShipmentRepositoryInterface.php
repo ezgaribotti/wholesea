@@ -6,5 +6,5 @@ use App\Interfaces\RepositoryInterface;
 
 interface ShipmentRepositoryInterface extends RepositoryInterface
 {
-    public function existsByOrderId(int $orderId): bool;
+    public function findByOrderId(int $orderId): ?object;
 }
