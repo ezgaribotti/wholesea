@@ -12,6 +12,7 @@ class PaymentResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
+            'url' => $this->url,
         ];
     }
 }

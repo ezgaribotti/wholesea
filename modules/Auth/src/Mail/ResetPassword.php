@@ -12,13 +12,13 @@ class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $link)
+    public function __construct(public string $fullName, public string $url)
     {
     }
 
     public function envelope(): object
     {
-        return new Envelope(subject: 'Reset your password');
+        return new Envelope(subject: 'Link to reset your password');
     }
 
     public function content(): object
@@ -26,7 +26,8 @@ class ResetPassword extends Mailable
         return new Content(
             view: 'auth::emails.reset-password',
             with: [
-                'link' => $this->link,
+                'full_name' => $this->fullName,
+                'url' => $this->url,
             ]
         );
     }

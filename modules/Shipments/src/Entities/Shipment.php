@@ -4,8 +4,7 @@ namespace Modules\Shipments\src\Entities;
 
 use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Common\src\Entities\CustomerAddress;
-use Modules\Common\src\Entities\Payment;
+use Modules\Common\src\Entities\Order;
 use Modules\Shipments\database\Factories\ShipmentFactory;
 
 class Shipment extends Entity
@@ -13,26 +12,25 @@ class Shipment extends Entity
     use HasFactory;
 
     protected $fillable = [
-        'tracking_code',
+        'order_id',
         'tracking_status_id',
-        'customer_address_id',
-        'cost',
-        'payment_id',
+        'insurance_policy_id',
+        'weight',
+        'final_cost',
+        'coordinates',
+        'extra_handling_fee',
+        'departure_at',
+        'arrival_at',
     ];
 
-    public function customerAddress(): object
+    public function order(): object
     {
-        return $this->belongsTo(CustomerAddress::class);
+        return $this->belongsTo(Order::class);
     }
 
-    public function items(): object
+    public function insurancePolicy(): object
     {
-        return $this->hasMany(ShipmentItem::class);
-    }
-
-    public function payment(): object
-    {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(InsurancePolicy::class);
     }
 
     public function trackingStatus(): object

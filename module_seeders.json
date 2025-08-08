@@ -1,0 +1,4 @@
+[
+    "Modules\\Common\\database\\Seeders\\DatabaseSeeder",
+    "Modules\\Shipments\\database\\Seeders\\DatabaseSeeder"
+]

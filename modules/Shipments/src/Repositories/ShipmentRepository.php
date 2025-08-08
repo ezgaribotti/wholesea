@@ -12,4 +12,9 @@ class ShipmentRepository extends Repository implements ShipmentRepositoryInterfa
     {
         parent::__construct($shipment);
     }
+
+    public function findByOrderId(int $orderId): ?object
+    {
+        return $this->entity->whereOrderId($orderId)->first();
+    }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Modules\Auth\src\Entities\Operator;
 use Modules\Auth\src\Entities\PasswordResetToken;
+use Modules\Auth\src\Enums\OperatorStatus;
 use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class);
@@ -32,7 +33,7 @@ test('should return an error when the credentials are wrong', function () {
 });
 
 test('should return an error when the operator is suspended or blocked', function () {
-    $operator = Operator::factory()->create(['status' => 'suspended']);
+    $operator = Operator::factory()->create(['status' => OperatorStatus::Suspended]);
 
     $response = $this->postJson(route('api.login'), [
         'internal_code' => $operator->internal_code,

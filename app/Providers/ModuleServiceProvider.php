@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Faker\Provider\Base as Faker;
+use Faker\Generator;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,15 @@ class ModuleServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // For your use in the factories
+
+        $faker = fake();
+        $faker->addProvider(new class($faker) extends Faker {
+            public function randomDecimal(int $minimum = 100): float {
+                return $this->generator->randomFloat(2, $minimum, $minimum * 2);
+            }
+        });
+        app()->singleton(Generator::class, fn() => $faker);
     }
 
     public static function setup(object $provider): void
@@ -40,6 +51,15 @@ class ModuleServiceProvider extends ServiceProvider
         if ($provider->app->runningInConsole()) {
             require $basePath . 'routes/console.php';
         }
+    }
+
+    public static function seedersToRun(): array
+    {
+        $path = base_path('module_seeders.json');
+        if (! file_exists($path)) {
+            return [];
+        }
+        return json_decode(file_get_contents($path), true);
     }
 
     public static function defineRoutes(callable $callback): void

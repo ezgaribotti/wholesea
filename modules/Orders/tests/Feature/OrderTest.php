@@ -26,11 +26,11 @@ test('should store a new order', function () {
     $item = ['product_id' => $product->id, 'quantity' => 1];
 
     $response = $this->postJson(route('api.orders.store'), [
-        'pay_shipping' => false,
+        'pay_shipping' => true,
         'customer_address_id' => $customerAddress->id,
         'items' => [$item],
     ]);
-    $response->assertServerError();
+    $response->assertOk();
 });
 
 test('should return an order', function () {

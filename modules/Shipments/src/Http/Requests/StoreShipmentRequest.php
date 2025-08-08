@@ -14,12 +14,8 @@ class StoreShipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_address_id' => 'required|exists:customer_addresses,id',
-            'items' => 'required|array',
-            'items.*.name' => 'required',
-            'items.*.weight' => 'required|numeric',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.description' => 'nullable',
+            'order_id' => 'required|exists:orders,id',
+            'insurance_policy_id' => 'required|exists:insurance_policies,id',
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Entities\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Customers\database\Factories\CustomerFactory;
+use Modules\Customers\src\Enums\CustomerStatus;
 
 class Customer extends Entity
 {
@@ -23,6 +24,10 @@ class Customer extends Entity
     {
         return $this->hasMany(CustomerAddress::class);
     }
+
+    protected $casts = [
+        'status' => CustomerStatus::class,
+    ];
 
     protected static function newFactory(): object
     {

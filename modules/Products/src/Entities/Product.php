@@ -17,13 +17,20 @@ class Product extends Entity
         'active',
         'stock',
         'unit_price',
+        'weight',
         'category_id',
+        'supplier_id',
         'description',
     ];
 
     public function category(): object
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function supplier(): object
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     public function images(): object

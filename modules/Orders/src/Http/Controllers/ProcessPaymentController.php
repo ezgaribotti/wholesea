@@ -4,11 +4,14 @@ namespace Modules\Orders\src\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Modules\Common\src\Enums\CustomerStatus;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
 use Modules\Orders\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Orders\src\Interfaces\ProductRepositoryInterface;
+use Modules\Orders\src\Mail\OrderPaid;
 
 class ProcessPaymentController extends Controller
 {
@@ -24,22 +27,22 @@ class ProcessPaymentController extends Controller
     {
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-
-        if ($payment->status === 'canceled') {
-            return response('Payment previously canceled.');
-        }
-
-        $session = StripeService::retrieveSession($payment->external_reference);
+        $session = StripeService::retrieveSession($payment->session_id);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
             return response('Unpaid or incomplete payment to process.');
 
         }
-        $this->paymentRepository->update(['status' => $session->payment_status], $payment->id);
+        $this->paymentRepository->update([
+            'status' => CustomerStatus::Paid, 'paid_at' => now()], $payment->id);
 
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
         }
+        $customer = $order->customerAddress->customer;
+        Mail::to($customer->email)
+            ->send(new OrderPaid($order, count($session->shipping_options) === 1));
+
         return response('Order successfully paid.');
     }
 
@@ -47,10 +50,6 @@ class ProcessPaymentController extends Controller
     {
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-
-        if ($payment->status === 'canceled') {
-            return response('Payment previously canceled.');
-        }
 
         // Restore reserved stock
 
@@ -60,8 +59,8 @@ class ProcessPaymentController extends Controller
             ], $product->id);
         });
 
-        StripeService::expireSession($payment->external_reference);
-        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
+        StripeService::expireSession($payment->session_id);
+        $this->paymentRepository->update(['status' => CustomerStatus::Canceled], $payment->id);
 
         return response('Order successfully canceled.');
     }

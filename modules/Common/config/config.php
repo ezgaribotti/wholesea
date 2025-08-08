@@ -62,7 +62,7 @@ return [
             |
             */
 
-            'display_name' => 'Shipping cost',
+            'display_name' => 'Final cost for your order',
 
         ],
     ],

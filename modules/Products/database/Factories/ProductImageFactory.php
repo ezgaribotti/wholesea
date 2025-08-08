@@ -15,7 +15,7 @@ class ProductImageFactory extends Factory
         return [
             'product_id' => Product::factory(),
             'full_url' => fake()->url(),
-            'description' => fake()->title(),
+            'description' => fake()->text(),
         ];
     }
 }

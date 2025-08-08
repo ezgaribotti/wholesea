@@ -2,8 +2,8 @@
 
 namespace Modules\Common\src\Entities;
 
-use Modules\Products\src\Entities\Product as RootEntity;
+use Modules\Products\src\Entities\Product as Entity;
 
-class Product extends RootEntity
+class Product extends Entity
 {
 }

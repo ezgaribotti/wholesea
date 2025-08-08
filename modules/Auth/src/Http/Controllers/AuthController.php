@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Modules\Auth\src\Enums\OperatorStatus;
 use Modules\Auth\src\Http\Requests\LoginRequest;
 use Modules\Auth\src\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\src\Http\Requests\SendResetLinkRequest;
@@ -29,11 +30,11 @@ class AuthController extends Controller
     {
         $operator = $this->operatorRepository->findByInternalCode($request->internal_code);
         if ($operator && Hash::check($request->password, $operator->password)) {
-            if ($operator->status == 'suspended') {
+            if ($operator->status === OperatorStatus::Suspended) {
                 abort(403, 'Your account has been suspended.');
             }
 
-            if ($operator->status == 'blocked') {
+            if ($operator->status == OperatorStatus::Blocked) {
                 abort(403, 'Your account has been blocked.');
             }
             $abilities = [];
@@ -62,18 +63,18 @@ class AuthController extends Controller
     public function sendResetLink(SendResetLinkRequest $request): object
     {
         $operator = $this->operatorRepository->findByEmail($request->email);
-
-        if ($operator->status == 'blocked') {
+        if ($operator->status == OperatorStatus::Blocked) {
             abort(403, 'Your account has been blocked.');
         }
         $token = Str::random(63);
 
-        $link = $request->return_url . chr(63) . http_build_query([
+        $url = $request->return_url . chr(63) . http_build_query([
             'email' => $operator->email,
             'token' => $token,
         ]);
 
-        Mail::to($operator->email)->send(new ResetPassword($link));
+        Mail::to($operator->email)
+            ->send(new ResetPassword($operator->full_name, $url));
 
         $this->passwordResetTokenRepository->deleteByEmail($operator->email);
         $this->passwordResetTokenRepository->create([
@@ -92,11 +93,11 @@ class AuthController extends Controller
         }
         $this->passwordResetTokenRepository->deleteByEmail($passwordReset->email);
 
-        $status = 'active'; // If the operator is suspended, it is reactivated
+        // If the operator is suspended, it is reactivated
 
         $this->operatorRepository->updateByEmail([
+            'status' => OperatorStatus::Active,
             'password' => Hash::make($request->password),
-            'status' => $status,
         ], $passwordReset->email);
 
         return response()->justMessage('Password successfully updated.');
