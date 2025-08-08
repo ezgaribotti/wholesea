@@ -5,7 +5,7 @@ namespace Modules\Orders\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Modules\Common\src\Enums\CustomerStatus;
+use Modules\Common\src\Enums\PaymentStatus;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
@@ -34,7 +34,7 @@ class ProcessPaymentController extends Controller
 
         }
         $this->paymentRepository->update([
-            'status' => CustomerStatus::Paid, 'paid_at' => now()], $payment->id);
+            'status' => PaymentStatus::Paid, 'paid_at' => now()], $payment->id);
 
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
@@ -60,7 +60,7 @@ class ProcessPaymentController extends Controller
         });
 
         StripeService::expireSession($payment->session_id);
-        $this->paymentRepository->update(['status' => CustomerStatus::Canceled], $payment->id);
+        $this->paymentRepository->update(['status' => PaymentStatus::Canceled], $payment->id);
 
         return response('Order successfully canceled.');
     }

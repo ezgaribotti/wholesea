@@ -5,7 +5,7 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Modules\Common\src\Enums\CustomerStatus;
+use Modules\Common\src\Enums\PaymentStatus;
 use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
@@ -41,7 +41,7 @@ class ShipmentController extends Controller
     {
         $shipment = $this->shipmentRepository->findByOrderId($request->order_id);
         if ($shipment && $payment = $shipment->order->payment) {
-            if ($payment->status === CustomerStatus::InProgress) {
+            if ($payment->status === PaymentStatus::InProgress) {
                 return response()->success(new UrlToPayResource($payment->url));
             }
 
@@ -51,7 +51,7 @@ class ShipmentController extends Controller
         }
         $order = $this->orderRepository->find($request->order_id);
         $payment = $order->payment;
-        if ($payment->status !== CustomerStatus::InProgress) {
+        if ($payment->status !== PaymentStatus::InProgress) {
 
             abort(422, 'The order has no payment in progress.');
         }

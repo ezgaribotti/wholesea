@@ -5,7 +5,7 @@ namespace Modules\Common\src\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Modules\Common\src\Entities\Payment;
-use Modules\Common\src\Enums\CustomerStatus;
+use Modules\Common\src\Enums\PaymentStatus;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsurePaymentProcessable
@@ -25,7 +25,7 @@ class EnsurePaymentProcessable
             return response('Payment is not processable.');
         }
 
-        if ($payment->status !== CustomerStatus::InProgress) {
+        if ($payment->status !== PaymentStatus::InProgress) {
             return response('Payment has already been processed.');
         }
         return $next($request);

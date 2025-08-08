@@ -15,7 +15,7 @@ Schedule::call(function () {
         ->get();
 
     foreach ($payments as $payment) {
-        $session = StripeService::retrieveSession($payment->external_reference);
+        $session = StripeService::retrieveSession($payment->session_id);
 
         if ($session->status === 'expired') {
             Payment::find($payment->id)
