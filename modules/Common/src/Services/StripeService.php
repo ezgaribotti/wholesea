@@ -84,7 +84,7 @@ class StripeService
         }
     }
 
-    public static function addShippingOptions(string $id, float $cost): object
+    public static function updateSession(string $id, float $shippingCost): object
     {
         $config = to_object(config('common.stripe'));
 
@@ -93,7 +93,7 @@ class StripeService
                 'shipping_rate_data' => array_merge($config->shipping_rate, [
                     'fixed_amount' => [
                         'currency' => $config->currency,
-                        'amount' => round($cost * 100)
+                        'amount' => round($shippingCost * 100)
                     ]
                 ]),
             ]]

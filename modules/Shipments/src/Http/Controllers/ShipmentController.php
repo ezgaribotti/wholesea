@@ -5,6 +5,7 @@ namespace Modules\Shipments\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Modules\Common\src\Enums\CustomerStatus;
 use Modules\Common\src\Http\Resources\UrlToPayResource;
 use Modules\Common\src\Services\StripeService;
 use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
@@ -40,8 +41,7 @@ class ShipmentController extends Controller
     {
         $shipment = $this->shipmentRepository->findByOrderId($request->order_id);
         if ($shipment && $payment = $shipment->order->payment) {
-            if ($payment->status == 'in_progress') {
-
+            if ($payment->status === CustomerStatus::InProgress) {
                 return response()->success(new UrlToPayResource($payment->url));
             }
 
@@ -50,17 +50,22 @@ class ShipmentController extends Controller
             abort(422, 'The shipment has no payment in progress.');
         }
         $order = $this->orderRepository->find($request->order_id);
+        $payment = $order->payment;
+        if ($payment->status !== CustomerStatus::InProgress) {
+
+            abort(422, 'The order has no payment in progress.');
+        }
+        // Calculate the final cost
 
         $weight = $order->products->sum('weight');
-        if ($weight <= 0) {
-            abort(422, 'The weight of the items must be greater than 0.');
-        }
+
+        abort_if($weight <= 0, 422, 'The weight of the items must be greater than 0.');
+
         $cost = $weight * $order->country->cost_per_weight;
 
         // Update payment to add the shipping option
 
-        $payment = $order->payment;
-        $session = StripeService::addShippingOptions($payment->session_id, $cost);
+        $session = StripeService::updateSession($payment->session_id, $cost);
 
         $trackingStatus = $this->trackingStatusRepository->findByName('unpaid');
         $this->shipmentRepository->create(array_merge($request->validated(), [
@@ -70,8 +75,9 @@ class ShipmentController extends Controller
             'weight' => $weight,
         ]));
 
-        $this->paymentRepository->update(['total_amount' => $payment->total_amount + $cost], $payment->id);
+        $totalAmount = $payment->total_amount + $cost; // This amount is paid by the customer
 
+        $this->paymentRepository->update(['total_amount' => $totalAmount], $payment->id);
         return response()->success(new UrlToPayResource($session->url));
     }
 

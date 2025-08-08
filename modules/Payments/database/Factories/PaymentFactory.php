@@ -4,6 +4,7 @@ namespace Modules\Payments\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Common\src\Enums\PaymentStatus;
 use Modules\Payments\src\Entities\Payment;
 
 class PaymentFactory extends Factory
@@ -13,7 +14,7 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'status' => fake()->randomElement(['in_progress', 'paid']),
+            'status' => fake()->randomElement([PaymentStatus::InProgress, PaymentStatus::Paid]),
             'tracking_code' => Str::ulid(),
             'session_id' => fake()->uuid(),
             'url' => fake()->url(),

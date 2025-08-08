@@ -5,6 +5,7 @@ namespace Modules\Orders\src\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Modules\Common\src\Enums\CustomerStatus;
 use Modules\Common\src\Services\StripeService;
 use Modules\Orders\src\Events\ShippingPaid;
 use Modules\Orders\src\Interfaces\OrderRepositoryInterface;
@@ -26,10 +27,6 @@ class ProcessPaymentController extends Controller
     {
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-
-        if ($payment->status === 'canceled') {
-            return response('Payment previously canceled.');
-        }
         $session = StripeService::retrieveSession($payment->session_id);
 
         if ($session->status != 'complete' || $session->payment_status != 'paid') {
@@ -37,13 +34,14 @@ class ProcessPaymentController extends Controller
 
         }
         $this->paymentRepository->update([
-            'status' => $session->payment_status, 'paid_at' => now()], $payment->id);
+            'status' => CustomerStatus::Paid, 'paid_at' => now()], $payment->id);
 
         if ($session->shipping_options) {
             ShippingPaid::dispatch($order);
         }
         $customer = $order->customerAddress->customer;
-        Mail::to($customer->email)->send(new OrderPaid($order, count($session->shipping_options)));
+        Mail::to($customer->email)
+            ->send(new OrderPaid($order, count($session->shipping_options) === 1));
 
         return response('Order successfully paid.');
     }
@@ -52,10 +50,6 @@ class ProcessPaymentController extends Controller
     {
         $order = $this->orderRepository->find($request->reference_id);
         $payment = $order->payment;
-
-        if ($payment->status === 'canceled') {
-            return response('Payment previously canceled.');
-        }
 
         // Restore reserved stock
 
@@ -66,7 +60,7 @@ class ProcessPaymentController extends Controller
         });
 
         StripeService::expireSession($payment->session_id);
-        $this->paymentRepository->update(['status' => 'canceled'], $payment->id);
+        $this->paymentRepository->update(['status' => CustomerStatus::Canceled], $payment->id);
 
         return response('Order successfully canceled.');
     }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Auth\database\Factories\OperatorFactory;
+use Modules\Auth\src\Enums\OperatorStatus;
 
 class Operator extends Entity implements Authenticatable
 {
@@ -27,7 +28,8 @@ class Operator extends Entity implements Authenticatable
     ];
 
     protected $casts = [
-        'password' => 'hashed'
+        'status' => OperatorStatus::class,
+        'password' => 'hashed',
     ];
 
     public function permissions(): object

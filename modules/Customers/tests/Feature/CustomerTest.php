@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Sanctum\Sanctum;
 use Modules\Common\src\Entities\Operator;
 use Modules\Customers\src\Entities\Customer;
+use Modules\Customers\src\Enums\CustomerStatus;
 use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class);
@@ -37,7 +38,7 @@ test('should update a customer', function () {
     $customer = Customer::factory()->create();
     $response = $this->putJson(route('api.customers.update', [
         'customer' => $customer
-    ]), Customer::factory()->make(['status' => 'banned'])->toArray());
+    ]), Customer::factory()->make(['status' => CustomerStatus::Banned])->toArray());
     $response->assertOk();
 });
 

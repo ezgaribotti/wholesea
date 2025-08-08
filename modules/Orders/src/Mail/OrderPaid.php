@@ -12,7 +12,7 @@ class OrderPaid extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public object $order, public int $shippingPaid)
+    public function __construct(public object $order, public bool $shippingPaid)
     {
     }
 
@@ -32,7 +32,7 @@ class OrderPaid extends Mailable
             with: [
                 'order_id' => $this->order->id,
                 'tracking_code' => $this->order->tracking_code,
-                'total_paid' => $this->order->total_amount,
+                'total_paid' => $this->order->payment->total_amount,
                 'shipping_paid' => $this->shippingPaid,
                 'currency' => strtoupper($currency),
                 'date' => now()->toDateTimeString(),
