@@ -12,6 +12,7 @@ use Modules\Shipments\src\Http\Requests\StoreShipmentRequest;
 use Modules\Shipments\src\Http\Requests\UpdateShipmentRequest;
 use Modules\Shipments\src\Http\Resources\ShipmentResource;
 use Modules\Shipments\src\Http\Resources\ShipmentSummaryResource;
+use Modules\Shipments\src\Interfaces\CountryRepositoryInterface;
 use Modules\Shipments\src\Interfaces\LogisticsPointRepositoryInterface;
 use Modules\Shipments\src\Interfaces\OrderRepositoryInterface;
 use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
@@ -30,6 +31,7 @@ class ShipmentController extends Controller
         protected OrderRepositoryInterface $orderRepository,
         protected TaxRepositoryInterface $taxRepository,
         protected LogisticsPointRepositoryInterface $logisticsPointRepository,
+        protected CountryRepositoryInterface $countryRepository,
     )
     {
     }
@@ -47,7 +49,6 @@ class ShipmentController extends Controller
             if ($payment->status === PaymentStatus::InProgress) {
                 return response()->success(new UrlToPayResource($payment->url));
             }
-
             // To create another shipment you have to step on the existing one
 
             abort(422, 'The shipment has no payment in progress.');
@@ -64,24 +65,10 @@ class ShipmentController extends Controller
 
         abort_if($weight <= 0, 422, 'The weight of the items must be greater than 0.');
 
-        $country = $order->country;
-        $origin = $this->logisticsPointRepository->findByCountryId($country->id);
+        $origin = $this->logisticsPointRepository->findByCountryId($order->country_id);
         $destination = $this->logisticsPointRepository->findByCountryId($order->customerAddress->country_id);
 
-        $deviationFactor = 1.31; // Ocean routes aren't straight, so we apply a deviation factor
-
-        $distance = HaversineUtil::calculateDistance($origin, $destination) * $deviationFactor;
-
-        $cost = ($weight * $country->cost_per_weight) + ($distance * $country->fuel_price); // Base cost
-
-        // Add to the final cost all taxes from origin and destination countries
-
-        $finalCost = $cost * (($this->taxRepository->sumTaxRateByCountryId($country->id)
-            + $this->taxRepository->sumTaxRateByCountryId($order->customerAddress->country_id)) / 100);
-
-        $extraHandlingFee = $origin->service_fee + $destination->service_fee; // Sum extra fees
-
-        $finalCost = round($finalCost + $extraHandlingFee, 2);
+        $finalCost = $this->calculateFinalCost($weight, $origin, $destination);
 
         // Update payment to add the shipping option
 
@@ -89,17 +76,17 @@ class ShipmentController extends Controller
 
         $trackingStatus = $this->trackingStatusRepository->findByName('unpaid');
         $this->shipmentRepository->create(array_merge($request->validated(), [
-            'final_cost' => $finalCost,
             'tracking_status_id' => $trackingStatus->id,
-            'extra_handling_fee' => $extraHandlingFee,
+            'final_cost' => $finalCost,
             'weight' => $weight,
             'coordinates' => json_encode([$origin->latitude, $origin->longitude,
                 $destination->latitude, $destination->longitude]),
         ]));
+        // This amount is paid by the customer
 
-        $totalAmount = $payment->total_amount + $finalCost; // This amount is paid by the customer
+        $this->paymentRepository->update([
+            'total_amount' => $payment->total_amount + $finalCost], $payment->id);
 
-        $this->paymentRepository->update(['total_amount' => $totalAmount], $payment->id);
         return response()->success(new UrlToPayResource($session->url));
     }
 
@@ -121,5 +108,25 @@ class ShipmentController extends Controller
         Mail::to($customer->email)->send(new ShipmentSynced($shipment));
 
         return response()->justMessage('Shipment successfully updated.');
+    }
+
+    private function calculateFinalCost(float $weight, object $origin, object $destination): float
+    {
+        $country = $this->countryRepository->findOrFail($origin->country_id);
+        list($costPerWeight, $fuelPrice) = [$country->cost_per_weight, $country->fuel_price];
+
+        $deviationFactor = 1.31; // Ocean routes aren't straight, so we apply a deviation factor
+
+        $distance = HaversineUtil::calculateDistance($origin, $destination) * $deviationFactor;
+
+        $cost = ($weight * $costPerWeight) + ($distance * $fuelPrice); // Base cost
+
+        // Add to the final cost all taxes from origin and destination countries
+
+        $finalCost = $cost * (($this->taxRepository->sumTaxRateByCountryId($origin->country_id)
+                    + $this->taxRepository->sumTaxRateByCountryId($destination->country_id)) / 100);
+
+        $extraHandlingFee = $origin->service_fee + $destination->service_fee; // Sum extra fees
+        return round($finalCost + $extraHandlingFee, 2);
     }
 }
