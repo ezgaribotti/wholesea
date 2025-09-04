@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Schedule;
 use Modules\Common\src\Enums\PaymentStatus;
 use Modules\Common\src\Services\StripeService;
@@ -11,13 +10,13 @@ Schedule::call(function () {
     // Cancel expired payments
 
     $payments = Payment::whereStatus(PaymentStatus::InProgress)
-        ->whereBetween('created_at', [Carbon::now()->subYear(), Carbon::now()->subWeek()])
+        ->whereBetween('created_at', [now()->subYear(), now()->subWeek()])
         ->get();
 
     foreach ($payments as $payment) {
         $session = StripeService::retrieveSession($payment->session_id);
 
-        if ($session->status === 'expired') {
+        if ($session->status === StripeService::EXPIRED) {
             Payment::find($payment->id)
                 ->update(['status' => PaymentStatus::Canceled]);
         }
