@@ -3,11 +3,16 @@
 namespace Modules\Common\src\Services;
 
 use Illuminate\Support\Facades\URL;
+use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class StripeService
 {
+    const COMPLETE = Session::STATUS_COMPLETE;
+    const EXPIRED = Session::STATUS_EXPIRED;
+    const PAYMENT_PAID = Session::PAYMENT_STATUS_PAID;
+
     public static function createSession(int $referenceId, string $trackingCode, string $email, array $items, array $routeNames): object
     {
         $config = to_object(config('common.stripe'));

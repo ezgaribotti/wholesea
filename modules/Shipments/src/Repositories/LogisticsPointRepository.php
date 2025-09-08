@@ -12,4 +12,9 @@ class LogisticsPointRepository extends Repository implements LogisticsPointRepos
     {
         parent::__construct($logisticsPoint);
     }
+
+    public function findByCountryId(int $countryId): ?object
+    {
+        return $this->entity->whereCountryId($countryId)->first();
+    }
 }

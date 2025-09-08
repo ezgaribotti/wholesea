@@ -4,6 +4,7 @@ namespace Modules\Shipments;
 
 use App\Providers\ModuleServiceProvider as Module;
 use Illuminate\Support\ServiceProvider;
+use Modules\Shipments\src\Interfaces\CountryRepositoryInterface;
 use Modules\Shipments\src\Interfaces\InsurancePolicyRepositoryInterface;
 use Modules\Shipments\src\Interfaces\LogisticsPointRepositoryInterface;
 use Modules\Shipments\src\Interfaces\OrderRepositoryInterface;
@@ -11,6 +12,7 @@ use Modules\Shipments\src\Interfaces\PaymentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\ShipmentRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TaxRepositoryInterface;
 use Modules\Shipments\src\Interfaces\TrackingStatusRepositoryInterface;
+use Modules\Shipments\src\Repositories\CountryRepository;
 use Modules\Shipments\src\Repositories\InsurancePolicyRepository;
 use Modules\Shipments\src\Repositories\LogisticsPointRepository;
 use Modules\Shipments\src\Repositories\OrderRepository;
@@ -30,6 +32,7 @@ class ShipmentServiceProvider extends ServiceProvider
         $this->app->bind(TrackingStatusRepositoryInterface::class, TrackingStatusRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+        $this->app->bind(CountryRepositoryInterface::class, CountryRepository::class);
     }
 
     public function boot(): void

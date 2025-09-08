@@ -16,7 +16,6 @@ return new class extends Migration
             $table->decimal('weight');
             $table->decimal('final_cost');
             $table->json('coordinates');
-            $table->decimal('extra_handling_fee')->default(0);
             $table->timestamp('departure_at')->nullable();
             $table->timestamp('arrival_at')->nullable();
             $table->timestamps();

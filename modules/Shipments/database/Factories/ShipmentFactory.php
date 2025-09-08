@@ -21,7 +21,6 @@ class ShipmentFactory extends Factory
             'weight' => fake()->randomDecimal(),
             'final_cost' => fake()->randomDecimal(),
             'coordinates' => json_encode([]),
-            'extra_handling_fee' => fake()->randomDecimal(),
             'departure_at' => fake()->dateTime(),
             'arrival_at' => fake()->dateTime(),
         ];

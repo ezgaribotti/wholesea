@@ -12,4 +12,9 @@ class TaxRepository extends Repository implements TaxRepositoryInterface
     {
         parent::__construct($tax);
     }
+
+    public function sumTaxRateByCountryId(int $countryId): float
+    {
+        return $this->entity->whereCountryId($countryId)->sum('tax_rate');
+    }
 }

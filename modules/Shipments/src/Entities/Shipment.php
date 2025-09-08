@@ -18,7 +18,6 @@ class Shipment extends Entity
         'weight',
         'final_cost',
         'coordinates',
-        'extra_handling_fee',
         'departure_at',
         'arrival_at',
     ];
